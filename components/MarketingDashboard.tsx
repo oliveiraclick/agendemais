@@ -39,10 +39,10 @@ export const MarketingDashboard: React.FC<MarketingDashboardProps> = ({ salonNam
 
     return (
         <div className="space-y-6">
-            <div className="bg-gradient-to-r from-purple-100 to-pink-100 p-6 rounded-2xl border border-purple-200">
+            <div className="bg-gradient-to-r from-brand-100 to-white p-6 rounded-2xl border border-brand-200">
                 <div className="flex items-center gap-3 mb-4">
                     <div className="bg-white p-2 rounded-lg shadow-sm">
-                        <Sparkles className="w-6 h-6 text-purple-600" />
+                        <Sparkles className="w-6 h-6 text-brand-600" />
                     </div>
                     <div>
                         <h2 className="text-xl font-bold text-gray-900">Assistente de Marketing IA</h2>
@@ -53,7 +53,7 @@ export const MarketingDashboard: React.FC<MarketingDashboardProps> = ({ salonNam
                 <div className="bg-white p-4 rounded-xl shadow-sm mb-4">
                     <label className="block text-sm font-bold text-gray-700 mb-2">Qual o objetivo do post de hoje?</label>
                     <textarea
-                        className="w-full border border-gray-200 rounded-lg p-3 text-sm focus:ring-2 focus:ring-purple-500 outline-none transition-all"
+                        className="w-full border border-gray-200 rounded-lg p-3 text-sm focus:ring-2 focus:ring-brand-500 outline-none transition-all"
                         placeholder="Ex: Divulgar que temos horários livres amanhã..."
                         rows={3}
                         value={goal}
@@ -64,7 +64,7 @@ export const MarketingDashboard: React.FC<MarketingDashboardProps> = ({ salonNam
                             <button
                                 key={i}
                                 onClick={() => setGoal(s)}
-                                className="whitespace-nowrap bg-gray-50 hover:bg-purple-50 text-xs px-3 py-1.5 rounded-full border border-gray-200 transition-colors"
+                                className="whitespace-nowrap bg-gray-50 hover:bg-brand-50 text-xs px-3 py-1.5 rounded-full border border-gray-200 transition-colors"
                             >
                                 {s}
                             </button>
@@ -73,7 +73,7 @@ export const MarketingDashboard: React.FC<MarketingDashboardProps> = ({ salonNam
                 </div>
 
                 <Button
-                    className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 shadow-lg shadow-purple-200"
+                    className="w-full bg-gradient-to-r from-brand-600 to-brand-800 hover:from-brand-700 hover:to-brand-900 shadow-lg shadow-brand-200"
                     onClick={handleGenerate}
                     disabled={loading || !goal}
                 >
@@ -91,7 +91,7 @@ export const MarketingDashboard: React.FC<MarketingDashboardProps> = ({ salonNam
 
             {generatedPost && (
                 <div className="animate-in slide-in-from-bottom-4 duration-500">
-                    <div className="bg-white border-2 border-purple-100 rounded-xl p-6 shadow-sm relative">
+                    <div className="bg-white border-2 border-brand-100 rounded-xl p-6 shadow-sm relative">
                         <div className="absolute top-4 right-4 flex gap-2">
                             <button
                                 onClick={handleCopy}
@@ -111,7 +111,7 @@ export const MarketingDashboard: React.FC<MarketingDashboardProps> = ({ salonNam
                             <button className="flex-1 bg-green-50 text-green-700 py-3 rounded-lg font-bold text-sm flex items-center justify-center gap-2 hover:bg-green-100 transition-colors">
                                 <MessageCircle className="w-4 h-4" /> WhatsApp
                             </button>
-                            <button className="flex-1 bg-pink-50 text-pink-700 py-3 rounded-lg font-bold text-sm flex items-center justify-center gap-2 hover:bg-pink-100 transition-colors">
+                            <button className="flex-1 bg-gray-50 text-gray-700 py-3 rounded-lg font-bold text-sm flex items-center justify-center gap-2 hover:bg-gray-100 transition-colors">
                                 <Instagram className="w-4 h-4" /> Instagram
                             </button>
                         </div>
