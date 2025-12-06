@@ -54,9 +54,7 @@ export const Register: React.FC<{
             {/* Header */}
             <div className="sm:mx-auto sm:w-full sm:max-w-md my-auto">
                 <div className="flex justify-center mb-6">
-                    {/* Removed shadow-xl shadow-brand-500/20 */}
-                    {/* Removed shadow-xl shadow-brand-500/20 */}
-                    <div className="bg-white p-3 rounded-2xl animate-in zoom-in duration-500">
+                    <div className="animate-in zoom-in duration-500">
                         <AgendeLogo className="w-40 h-auto" />
                     </div>
                 </div>
