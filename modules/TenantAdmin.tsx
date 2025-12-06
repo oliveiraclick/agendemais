@@ -880,7 +880,23 @@ export const TenantAdmin: React.FC<{ salonId: string; onBack: () => void }> = ({
                                     <div className="space-y-3">
                                         <Input label="Nome" value={newService.name} onChange={e => setNewService({ ...newService, name: e.target.value })} />
                                         <div className="grid grid-cols-2 gap-3">
-                                            <Input label="Minutos" type="number" value={newService.duration} onChange={e => setNewService({ ...newService, duration: e.target.value })} />
+                                            <div className="flex flex-col gap-1">
+                                                <label className="text-xs font-bold text-gray-500 uppercase">Duração</label>
+                                                <select
+                                                    className="w-full px-3 py-2 border rounded-md bg-white text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+                                                    value={newService.duration}
+                                                    onChange={e => setNewService({ ...newService, duration: e.target.value })}
+                                                >
+                                                    <option value="30">30 min</option>
+                                                    <option value="45">45 min</option>
+                                                    <option value="60">1 hora</option>
+                                                    <option value="90">1:30</option>
+                                                    <option value="120">2:00</option>
+                                                    <option value="180">3:00</option>
+                                                    <option value="240">4:00</option>
+                                                    <option value="300">5:00</option>
+                                                </select>
+                                            </div>
                                             <Input label="Preço" type="number" value={newService.price} onChange={e => setNewService({ ...newService, price: e.target.value })} />
                                         </div>
                                         <div className="flex gap-2 mt-4">
