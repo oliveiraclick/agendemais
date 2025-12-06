@@ -9,7 +9,7 @@ const generateId = () => Math.random().toString(36).substr(2, 9);
 const INITIAL_PLANS: SaaSPlan[] = [
     {
         id: 'start',
-        name: 'Start',
+        name: 'Gratuito',
         price: 0,
         perProfessionalPrice: 0,
         maxProfessionals: 1,
@@ -17,7 +17,7 @@ const INITIAL_PLANS: SaaSPlan[] = [
     },
     {
         id: 'professional',
-        name: 'Profissional',
+        name: 'Start',
         price: 29.90,
         perProfessionalPrice: 10,
         maxProfessionals: 1,
