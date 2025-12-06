@@ -45,6 +45,11 @@ export const PublicBooking: React.FC<{
     const [lookupPhone, setLookupPhone] = useState('');
     const [myFoundAppts, setMyFoundAppts] = useState<any[]>([]);
 
+    // Review State
+    const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+    const [newReviewRating, setNewReviewRating] = useState(0);
+    const [newReviewComment, setNewReviewComment] = useState('');
+
     // Scroll Ref
     const confirmBtnRef = useRef<HTMLDivElement>(null);
 
@@ -100,9 +105,12 @@ export const PublicBooking: React.FC<{
 
     const generateTimeSlots = () => {
         if (!selectedDate || !salon.openTime || !salon.closeTime) return [];
-        const start = parseInt(salon.openTime.split(':')[0]) * 60 + parseInt(salon.openTime.split(':')[1]);
-        const end = parseInt(salon.closeTime.split(':')[0]) * 60 + parseInt(salon.closeTime.split(':')[1]);
+        const startMinutes = parseInt(salon.openTime.split(':')[0]) * 60 + parseInt(salon.openTime.split(':')[1]);
+        const endMinutes = parseInt(salon.closeTime.split(':')[0]) * 60 + parseInt(salon.closeTime.split(':')[1]);
         const interval = salon.slotInterval || 30;
+
+        // Define duration for the slot check (defaults to interval if no service selected, though service is usually selected step 1)
+        const duration = selectedService ? selectedService.durationMinutes : interval;
 
         const now = new Date();
         const year = now.getFullYear();
@@ -114,22 +122,60 @@ export const PublicBooking: React.FC<{
         const currentMinutes = now.getHours() * 60 + now.getMinutes();
 
         const slots = [];
-        for (let time = start; time < end; time += interval) {
+        for (let time = startMinutes; time < endMinutes; time += interval) {
+            // Check if start time is in the past (if today)
             if (isToday && time <= currentMinutes + 15) {
                 continue;
             }
 
-            const hours = Math.floor(time / 60);
-            const minutes = time % 60;
-            const timeString = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+            // Check if the service finishes after closing time
+            if (time + duration > endMinutes) continue;
 
-            const isBlocked = salon.blockedPeriods?.some(block => {
+            // Check Collision with Blocked Periods (Day Blocks)
+            // Note: Currently BlockedPeriod is treated as full day block as per data structure
+            const isBlockedByPeriod = salon.blockedPeriods?.some(block => {
                 if (block.date !== selectedDate) return false;
                 if (block.professionalId && block.professionalId !== selectedProfessional?.id) return false;
                 return true;
             });
 
-            if (!isBlocked) slots.push(timeString);
+            if (isBlockedByPeriod) continue;
+
+            // Check Collision with Existing Appointments
+            const isBlockedByAppt = salon.appointments.some(appt => {
+                // Ignore cancelled
+                if (appt.status === 'cancelled') return false;
+
+                // Ignore if for another professional (if pro selected)
+                // If selectedProfessional is null/any, logic might differ, but current flow forces selection or defaults to [0]
+                if (selectedProfessional && appt.professionalId !== selectedProfessional.id) return false;
+
+                // Check Date Match (String comparison YYYY-MM-DD)
+                if (!appt.date.startsWith(selectedDate)) return false;
+
+                // Calculate Appointment Minutes Range
+                const apptDate = new Date(appt.date);
+                const apptStart = apptDate.getHours() * 60 + apptDate.getMinutes();
+
+                // Find service to get duration, fallback to interval or default 30
+                const apptService = salon.services.find(s => s.id === appt.serviceId);
+                const apptDuration = apptService ? apptService.durationMinutes : (salon.slotInterval || 30);
+                const apptEnd = apptStart + apptDuration;
+
+                // Check Overlap
+                // Slot: [time, time + duration]
+                // Appt: [apptStart, apptEnd]
+                // Overlap condition: StartA < EndB && EndA > StartB
+                const slotEnd = time + duration;
+                return (time < apptEnd && slotEnd > apptStart);
+            });
+
+            if (!isBlockedByAppt) {
+                const hours = Math.floor(time / 60);
+                const minutes = time % 60;
+                const timeString = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+                slots.push(timeString);
+            }
         }
         return slots;
     };
@@ -211,6 +257,23 @@ export const PublicBooking: React.FC<{
             .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
         setMyFoundAppts(found);
+    };
+
+    const handleSubmitReview = () => {
+        if (newReviewRating === 0) return;
+        const { addReview } = useStore();
+        addReview(salon.id, {
+            id: Math.random().toString(36).substr(2, 9),
+            salonId: salon.id,
+            clientName: "Anônimo", // Or capture name if available
+            rating: newReviewRating,
+            comment: newReviewComment,
+            date: new Date().toISOString()
+        });
+        setIsReviewModalOpen(false);
+        setNewReviewRating(0);
+        setNewReviewComment('');
+        alert('Obrigado pela sua avaliação!');
     };
 
     const handleServiceSelect = (svc: Service) => {
@@ -452,7 +515,7 @@ export const PublicBooking: React.FC<{
 
                                 <div className="bg-brand-50 p-4 rounded-xl text-center mt-6">
                                     <p className="font-bold text-brand-800 mb-2">Já é nosso cliente?</p>
-                                    <Button variant="outline" className="w-full bg-white" onClick={() => { /* Open Add Review Modal - Implementation Future */ }}>
+                                    <Button variant="outline" className="w-full bg-white" onClick={() => setIsReviewModalOpen(true)}>
                                         Avaliar Experiência
                                     </Button>
                                 </div>
@@ -798,6 +861,44 @@ export const PublicBooking: React.FC<{
                         </div>
                     </div>
                 )}
+
+                {/* Review Modal */}
+                <Modal isOpen={isReviewModalOpen} onClose={() => setIsReviewModalOpen(false)} title="Avaliar Experiência">
+                    <div className="space-y-4">
+                        <div className="text-center">
+                            <p className="text-gray-600 mb-4">Quantas estrelas você dá para o {salon.name}?</p>
+                            <div className="flex justify-center gap-2 mb-4">
+                                {[1, 2, 3, 4, 5].map((star) => (
+                                    <button
+                                        key={star}
+                                        onClick={() => setNewReviewRating(star)}
+                                        className="transition-transform hover:scale-110"
+                                    >
+                                        <Star
+                                            className={`w-8 h-8 ${star <= newReviewRating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`}
+                                        />
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-bold text-gray-700 mb-2">Seu Comentário (Opcional)</label>
+                            <textarea
+                                className="w-full border border-gray-200 rounded-xl p-3 text-sm focus:ring-2 focus:ring-brand-500 outline-none transition-all"
+                                rows={4}
+                                placeholder="Conte como foi sua experiência..."
+                                value={newReviewComment}
+                                onChange={(e) => setNewReviewComment(e.target.value)}
+                            />
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-3">
+                            <Button variant="outline" onClick={() => setIsReviewModalOpen(false)}>Cancelar</Button>
+                            <Button onClick={handleSubmitReview} disabled={newReviewRating === 0}>Enviar Avaliação</Button>
+                        </div>
+                    </div>
+                </Modal>
 
                 {/* My Appointments Lookup Modal */}
                 <Modal isOpen={isMyApptsOpen} onClose={() => setIsMyApptsOpen(false)} title="Meus Agendamentos">

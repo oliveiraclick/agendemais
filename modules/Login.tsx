@@ -15,7 +15,7 @@ export const Login: React.FC<{
   onRegister?: () => void;
 }> = ({ context, salonId, prefilledEmail, onLogin, onClientLogin, onRegister, onBack }) => {
   const { salons } = useStore();
-  const { showPrompt } = useInstallPrompt();
+  const { showPrompt, isInstallable } = useInstallPrompt();
 
   // Login Type State: 'company' | 'client'
   const [activeTab, setActiveTab] = useState<'company' | 'client'>('company');
@@ -212,25 +212,31 @@ export const Login: React.FC<{
         </Card>
 
         {/* App Store / Google Play Buttons (Simulation) */}
-        <div className="mt-8 flex flex-col items-center gap-4">
-          <p className="text-gray-500 text-sm font-medium">Baixe nosso App</p>
-          <div className="flex gap-4">
+        <div className="mt-4 flex flex-col items-center gap-3 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300">
+          <p className="text-gray-400 text-xs font-semibold uppercase tracking-wider">Baixe nosso App</p>
+          <div className="flex gap-3">
             <button
-              onClick={() => showPrompt().catch(() => alert("Para instalar no iOS:\n\n1. Toque no botão Compartilhar (quadrado com seta)\n2. Role para baixo e selecione 'Adicionar à Tela de Início'"))}
-              className="bg-black text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:opacity-80 transition-opacity"
+              onClick={() => alert("Para instalar no iOS:\n\n1. Toque no botão Compartilhar (quadrado com seta)\n2. Role para baixo e selecione 'Adicionar à Tela de Início'")}
+              className="bg-black text-white px-4 py-3 rounded-lg flex items-center gap-2 hover:opacity-80 transition-opacity"
             >
               <div className="text-left leading-none">
-                <div className="text-[10px] uppercase">Baixar na</div>
-                <div className="text-sm font-bold font-sans">App Store</div>
+                <div className="text-[10px] uppercase text-gray-400">Versão Mobile</div>
+                <div className="text-sm font-bold font-sans">INSTALE NO IOS</div>
               </div>
             </button>
             <button
-              onClick={() => showPrompt()}
-              className="bg-black text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:opacity-80 transition-opacity"
+              onClick={() => {
+                if (isInstallable) {
+                  showPrompt();
+                } else {
+                  alert("Para instalar no Android:\n\n1. Toque nos três pontinhos do navegador\n2. Selecione 'Instalar aplicativo' ou 'Adicionar à tela inicial'");
+                }
+              }}
+              className="bg-black text-white px-4 py-3 rounded-lg flex items-center gap-2 hover:opacity-80 transition-opacity"
             >
               <div className="text-left leading-none">
-                <div className="text-[10px] uppercase">Disponível no</div>
-                <div className="text-sm font-bold font-sans">Google Play</div>
+                <div className="text-[10px] uppercase text-gray-400">Versão Mobile</div>
+                <div className="text-sm font-bold font-sans">INSTALE NO ANDROID</div>
               </div>
             </button>
           </div>

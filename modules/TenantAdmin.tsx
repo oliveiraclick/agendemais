@@ -749,7 +749,7 @@ export const TenantAdmin: React.FC<{ salonId: string; onBack: () => void }> = ({
                             <div className="space-y-2">
                                 <h4 className="font-bold text-sm text-gray-700">Agendamentos do Dia</h4>
                                 {salon.appointments
-                                    .filter(a => a.date.startsWith(blockDate || new Date().toISOString().split('T')[0]))
+                                    .filter(a => a && a.date && typeof a.date === 'string' && a.date.startsWith(blockDate || new Date().toISOString().split('T')[0]))
                                     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
                                     .map(appt => (
                                         <div key={appt.id} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg border-l-4 border-brand-500">
@@ -757,7 +757,7 @@ export const TenantAdmin: React.FC<{ salonId: string; onBack: () => void }> = ({
                                                 <div className="font-bold text-gray-900">{new Date(appt.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
                                                 <div className="text-sm text-gray-600">{appt.clientName}</div>
                                                 <div className="text-xs text-gray-400">
-                                                    {salon.services.find(s => s.id === appt.serviceId)?.name} • {salon.professionals.find(p => p.id === appt.professionalId)?.name}
+                                                    {salon.services.find(s => s && s.id === appt.serviceId)?.name || 'Serviço'} • {salon.professionals.find(p => p && p.id === appt.professionalId)?.name || 'Profissional'}
                                                 </div>
                                             </div>
                                             <span className={`px-2 py-1 rounded text-xs font-bold ${appt.status === 'completed' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
@@ -765,7 +765,7 @@ export const TenantAdmin: React.FC<{ salonId: string; onBack: () => void }> = ({
                                             </span>
                                         </div>
                                     ))}
-                                {salon.appointments.filter(a => a.date.startsWith(blockDate || new Date().toISOString().split('T')[0])).length === 0 && (
+                                {salon.appointments.filter(a => a && a.date && typeof a.date === 'string' && a.date.startsWith(blockDate || new Date().toISOString().split('T')[0])).length === 0 && (
                                     <p className="text-center text-gray-400 text-sm py-4">Nenhum agendamento para esta data.</p>
                                 )}
                             </div>
@@ -782,34 +782,37 @@ export const TenantAdmin: React.FC<{ salonId: string; onBack: () => void }> = ({
                         </div>
 
                         <div className="grid grid-cols-1 gap-3">
-                            {salon.products.map(prod => (
-                                <div key={prod.id} className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex gap-3">
-                                    {prod.image ? (
-                                        <img src={prod.image} className="w-16 h-16 rounded-lg object-cover bg-gray-100" />
-                                    ) : (
-                                        <div className="w-16 h-16 rounded-lg bg-gray-100 flex items-center justify-center text-gray-400">
-                                            <Package className="w-8 h-8" />
-                                        </div>
-                                    )}
-                                    <div className="flex-1">
-                                        <div className="flex justify-between items-start">
-                                            <h4 className="font-bold text-gray-900">{prod.name}</h4>
-                                            <Badge color={prod.quantity <= (prod.minQuantity || 5) ? 'red' : 'green'}>
-                                                {prod.quantity} {prod.unit}
-                                            </Badge>
-                                        </div>
-                                        {prod.isForSale && (
-                                            <div className="mt-1 text-sm text-brand-600 font-bold">
-                                                Venda: R$ {prod.salePrice?.toFixed(2)}
+                            {salon.products.map(prod => {
+                                if (!prod) return null;
+                                return (
+                                    <div key={prod.id || Math.random()} className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex gap-3">
+                                        {prod.image ? (
+                                            <img src={prod.image} className="w-16 h-16 rounded-lg object-cover bg-gray-100" />
+                                        ) : (
+                                            <div className="w-16 h-16 rounded-lg bg-gray-100 flex items-center justify-center text-gray-400">
+                                                <Package className="w-8 h-8" />
                                             </div>
                                         )}
-                                        <div className="mt-2 flex gap-2">
-                                            <button className="text-xs bg-gray-100 px-2 py-1 rounded hover:bg-gray-200 transition-colors">+ Entrada</button>
-                                            <button className="text-xs bg-gray-100 px-2 py-1 rounded hover:bg-gray-200 transition-colors">- Saída</button>
+                                        <div className="flex-1">
+                                            <div className="flex justify-between items-start">
+                                                <h4 className="font-bold text-gray-900">{prod.name}</h4>
+                                                <Badge color={prod.quantity <= (prod.minQuantity || 5) ? 'red' : 'green'}>
+                                                    {prod.quantity} {prod.unit}
+                                                </Badge>
+                                            </div>
+                                            {prod.isForSale && (
+                                                <div className="mt-1 text-sm text-brand-600 font-bold">
+                                                    Venda: R$ {prod.salePrice?.toFixed(2)}
+                                                </div>
+                                            )}
+                                            <div className="mt-2 flex gap-2">
+                                                <button className="text-xs bg-gray-100 px-2 py-1 rounded hover:bg-gray-200 transition-colors">+ Entrada</button>
+                                                <button className="text-xs bg-gray-100 px-2 py-1 rounded hover:bg-gray-200 transition-colors">- Saída</button>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            ))}
+                                );
+                            })}
                             {salon.products.length === 0 && (
                                 <div className="text-center py-8 text-gray-500 bg-gray-50 rounded-xl border border-dashed border-gray-300">
                                     <Package className="w-12 h-12 mx-auto text-gray-300 mb-2" />
@@ -999,7 +1002,7 @@ export const TenantAdmin: React.FC<{ salonId: string; onBack: () => void }> = ({
                                     let productRevenue = 0;
 
                                     proAppts.forEach(appt => {
-                                        const productsTotal = appt.products ? appt.products.reduce((acc, p) => acc + (p.salePrice || 0), 0) : 0;
+                                        const productsTotal = appt.products ? appt.products.reduce((acc, p) => acc + (p?.salePrice || 0), 0) : 0;
                                         const servicePrice = appt.price - productsTotal;
 
                                         serviceRevenue += servicePrice;
@@ -1208,7 +1211,7 @@ export const TenantAdmin: React.FC<{ salonId: string; onBack: () => void }> = ({
             case 'marketing':
                 return (
                     <div className="space-y-4">
-                        <MarketingDashboard salonName={salon.name} />
+                        <MarketingDashboard salonName={salon.name} reviews={salon.reviews} />
                     </div>
                 );
 

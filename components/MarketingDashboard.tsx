@@ -4,11 +4,15 @@ import { Button, Card } from './UI';
 import { generateMarketingPost } from '../services/geminiService';
 import { Sparkles, Copy, Check, Share2, MessageCircle, Instagram } from 'lucide-react';
 
+import { Review } from '../types';
+import { Star } from 'lucide-react';
+
 interface MarketingDashboardProps {
     salonName: string;
+    reviews?: Review[];
 }
 
-export const MarketingDashboard: React.FC<MarketingDashboardProps> = ({ salonName }) => {
+export const MarketingDashboard: React.FC<MarketingDashboardProps> = ({ salonName, reviews = [] }) => {
     const [goal, setGoal] = useState('');
     const [generatedPost, setGeneratedPost] = useState('');
     const [loading, setLoading] = useState(false);
@@ -118,6 +122,51 @@ export const MarketingDashboard: React.FC<MarketingDashboardProps> = ({ salonNam
                     </div>
                 </div>
             )}
+
+            {/* Reviews Section */}
+            <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+                <div className="flex justify-between items-center mb-6">
+                    <div>
+                        <h2 className="text-xl font-bold text-gray-900">Últimas Avaliações</h2>
+                        <p className="text-sm text-gray-600">{reviews.length} avaliações recebidas</p>
+                    </div>
+                    {reviews.length > 0 && (
+                        <div className="text-right">
+                            <div className="text-2xl font-bold text-gray-900 flex items-center justify-end gap-1">
+                                {(reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length).toFixed(1)} <Star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+                            </div>
+                            <span className="text-xs text-brand-600 font-bold">Média Geral</span>
+                        </div>
+                    )}
+                </div>
+
+                <div className="space-y-4">
+                    {reviews.slice().reverse().map(review => (
+                        <div key={review.id} className="border-b border-gray-100 pb-4 last:border-0 last:pb-0">
+                            <div className="flex justify-between items-start mb-2">
+                                <span className="font-bold text-gray-900">{review.clientName}</span>
+                                <div className="flex gap-0.5">
+                                    {[1, 2, 3, 4, 5].map(star => (
+                                        <Star key={star} className={`w-3 h-3 ${star <= review.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-200'}`} />
+                                    ))}
+                                </div>
+                            </div>
+                            {review.comment && (
+                                <p className="text-sm text-gray-600 bg-gray-50 p-2 rounded-lg italic border border-gray-100">"{review.comment}"</p>
+                            )}
+                            <div className="mt-2 text-[10px] text-gray-400">
+                                {new Date(review.date).toLocaleDateString()} às {new Date(review.date).toLocaleTimeString()}
+                            </div>
+                        </div>
+                    ))}
+                    {reviews.length === 0 && (
+                        <div className="text-center py-8 text-gray-400">
+                            <Star className="w-10 h-10 mx-auto mb-2 opacity-50" />
+                            <p>Nenhuma avaliação ainda.</p>
+                        </div>
+                    )}
+                </div>
+            </div>
         </div>
     );
 };
