@@ -11,6 +11,7 @@ import { ProfessionalPanel } from './modules/ProfessionalPanel';
 import { HowItWorks } from './modules/HowItWorks';
 import { TermsOfUse } from './modules/TermsOfUse';
 import { PrivacyPolicy } from './modules/PrivacyPolicy';
+import { InstallProvider } from './contexts/InstallContext';
 import { ClientPortal } from './modules/ClientPortal';
 import { InstallPrompt } from './components/InstallPrompt';
 
@@ -138,8 +139,10 @@ const AppContent: React.FC = () => {
 const App: React.FC = () => {
   return (
     <StoreProvider>
-      <AppContent />
-      <InstallPrompt />
+      <InstallProvider>
+        <AppContent />
+        <InstallPrompt />
+      </InstallProvider>
     </StoreProvider>
   );
 };

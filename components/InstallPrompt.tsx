@@ -1,50 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { Download, X } from 'lucide-react';
-
-interface BeforeInstallPromptEvent extends Event {
-    prompt: () => Promise<void>;
-    userChoice: Promise<{ outcome: 'accepted' | 'dismissed'; platform: string }>;
-}
+import { useInstallPrompt } from '../contexts/InstallContext';
 
 export function InstallPrompt() {
-    const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
+    const { deferredPrompt, showPrompt, isInstallable } = useInstallPrompt();
     const [isVisible, setIsVisible] = useState(false);
 
     useEffect(() => {
-        const handler = (e: Event) => {
-            // Prevent the mini-infobar from appearing on mobile
-            e.preventDefault();
-            // Stash the event so it can be triggered later.
-            setDeferredPrompt(e as BeforeInstallPromptEvent);
-            // Update UI notify the user they can install the PWA
+        // Show prompt if event is captured and installable
+        if (deferredPrompt) {
             setIsVisible(true);
-        };
-
-        window.addEventListener('beforeinstallprompt', handler);
-
-        return () => {
-            window.removeEventListener('beforeinstallprompt', handler);
-        };
-    }, []);
-
-    const handleInstallClick = async () => {
-        if (!deferredPrompt) return;
-
-        // Show the install prompt
-        await deferredPrompt.prompt();
-
-        // Wait for the user to respond to the prompt
-        const choiceResult = await deferredPrompt.userChoice;
-
-        if (choiceResult.outcome === 'accepted') {
-            console.log('User accepted the install prompt');
-            setIsVisible(false);
-        } else {
-            console.log('User dismissed the install prompt');
         }
-
-        setDeferredPrompt(null);
-    };
+    }, [deferredPrompt]);
 
     const handleClose = () => {
         setIsVisible(false);
@@ -77,7 +44,7 @@ export function InstallPrompt() {
                         <X size={20} />
                     </button>
                     <button
-                        onClick={handleInstallClick}
+                        onClick={() => { showPrompt(); setIsVisible(false); }}
                         className="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-lg font-medium text-sm transition-colors shadow-lg shadow-brand-500/30 flex items-center gap-2"
                     >
                         <Download size={16} />

@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useStore } from '../store';
 import { Button, Card, Input, AgendeLogo } from '../components/UI';
 import { LogIn, Store, Lock, User, Phone, Mail, CalendarCheck } from 'lucide-react';
+import { useInstallPrompt } from '../contexts/InstallContext';
 
 export const Login: React.FC<{
   context: 'admin' | 'tenant';
@@ -14,6 +15,7 @@ export const Login: React.FC<{
   onRegister?: () => void;
 }> = ({ context, salonId, prefilledEmail, onLogin, onClientLogin, onRegister, onBack }) => {
   const { salons } = useStore();
+  const { showPrompt } = useInstallPrompt();
 
   // Login Type State: 'company' | 'client'
   const [activeTab, setActiveTab] = useState<'company' | 'client'>('company');
@@ -88,13 +90,13 @@ export const Login: React.FC<{
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative">
+    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-6 sm:px-6 lg:px-8 relative">
 
       {/* Header / Logo Section */}
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="flex justify-center flex-col items-center mb-6">
-          <div className="mb-4 animate-in zoom-in duration-500">
-            <AgendeLogo className="w-40 h-auto" />
+        <div className="flex justify-center flex-col items-center mb-4">
+          <div className="mb-2 animate-in zoom-in duration-500">
+            <AgendeLogo className="w-32 h-auto" />
           </div>
 
 
@@ -214,7 +216,7 @@ export const Login: React.FC<{
           <p className="text-gray-500 text-sm font-medium">Baixe nosso App</p>
           <div className="flex gap-4">
             <button
-              onClick={() => alert("Para instalar no iOS:\n\n1. Toque no botão Compartilhar (quadrado com seta)\n2. Role para baixo e selecione 'Adicionar à Tela de Início'")}
+              onClick={() => showPrompt().catch(() => alert("Para instalar no iOS:\n\n1. Toque no botão Compartilhar (quadrado com seta)\n2. Role para baixo e selecione 'Adicionar à Tela de Início'"))}
               className="bg-black text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:opacity-80 transition-opacity"
             >
               <div className="text-left leading-none">
@@ -223,7 +225,7 @@ export const Login: React.FC<{
               </div>
             </button>
             <button
-              onClick={() => alert("Para instalar no Android:\n\n1. Toque nos três pontinhos do navegador (canto superior)\n2. Selecione 'Instalar aplicativo' ou 'Adicionar à tela inicial'")}
+              onClick={() => showPrompt()}
               className="bg-black text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:opacity-80 transition-opacity"
             >
               <div className="text-left leading-none">
