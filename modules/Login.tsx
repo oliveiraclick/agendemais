@@ -208,7 +208,32 @@ export const Login: React.FC<{
             )}
           </div>
         </Card>
-      </div>
-    </div>
+
+        {/* App Store / Google Play Buttons (Simulation) */}
+        <div className="mt-8 flex flex-col items-center gap-4">
+          <p className="text-gray-500 text-sm font-medium">Baixe nosso App</p>
+          <div className="flex gap-4">
+            <button
+              onClick={() => alert("Para instalar no iOS:\n\n1. Toque no botão Compartilhar (quadrado com seta)\n2. Role para baixo e selecione 'Adicionar à Tela de Início'")}
+              className="bg-black text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:opacity-80 transition-opacity"
+            >
+              <div className="text-left leading-none">
+                <div className="text-[10px] uppercase">Baixar na</div>
+                <div className="text-sm font-bold font-sans">App Store</div>
+              </div>
+            </button>
+            <button
+              onClick={() => alert("Para instalar no Android:\n\n1. Toque nos três pontinhos do navegador (canto superior)\n2. Selecione 'Instalar aplicativo' ou 'Adicionar à tela inicial'")}
+              className="bg-black text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:opacity-80 transition-opacity"
+            >
+              <div className="text-left leading-none">
+                <div className="text-[10px] uppercase">Disponível no</div>
+                <div className="text-sm font-bold font-sans">Google Play</div>
+              </div>
+            </button>
+          </div>
+        </div>
+      </div >
+    </div >
   );
 };
