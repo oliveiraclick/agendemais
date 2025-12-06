@@ -590,9 +590,12 @@ export const PublicBooking: React.FC<{
                             <h2 className="text-xl font-bold text-gray-900 mb-2">Data e Hora</h2>
                             {/* Fix: Optimized Date Input for Mobile */}
                             <div className="relative mb-4">
+                                <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none text-brand-600">
+                                    <Calendar className="w-5 h-5" />
+                                </div>
                                 <input
                                     type="date"
-                                    className="w-full border border-gray-200 rounded-xl px-4 py-3 bg-white font-medium text-gray-900 outline-none focus:border-brand-500 appearance-none min-h-[50px]"
+                                    className="w-full border border-gray-200 rounded-xl pl-12 pr-4 py-3 bg-white font-medium text-gray-900 outline-none focus:border-brand-500 appearance-none min-h-[50px] shadow-sm"
                                     value={selectedDate}
                                     onChange={(e) => { setSelectedDate(e.target.value); setSelectedTime(''); }}
                                     style={{ WebkitAppearance: 'none' }}
