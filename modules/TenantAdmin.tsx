@@ -695,6 +695,167 @@ export const TenantAdmin: React.FC<{ salonId: string; onBack: () => void }> = ({
                     </div>
                 )
 
+            case 'agenda':
+                return (
+                    <div className="space-y-4">
+                        <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+                            <h3 className="font-bold text-gray-900 mb-4">Gerenciar Agenda</h3>
+
+                            {/* Date Picker & Block Controls */}
+                            <div className="flex flex-col gap-4 mb-6">
+                                <Input
+                                    label="Data"
+                                    type="date"
+                                    value={blockDate || new Date().toISOString().split('T')[0]}
+                                    onChange={e => setBlockDate(e.target.value)}
+                                />
+
+                                <div className="p-3 bg-gray-50 rounded-lg border border-gray-200">
+                                    <h4 className="text-xs font-bold text-gray-500 uppercase mb-2">Bloquear Horário</h4>
+                                    <div className="grid grid-cols-2 gap-2 mb-2">
+                                        <button
+                                            onClick={() => setBlockType('salon')}
+                                            className={`py-1.5 text-xs font-bold rounded ${blockType === 'salon' ? 'bg-gray-800 text-white' : 'bg-white border text-gray-600'}`}
+                                        >
+                                            Salão Inteiro
+                                        </button>
+                                        <button
+                                            onClick={() => setBlockType('professional')}
+                                            className={`py-1.5 text-xs font-bold rounded ${blockType === 'professional' ? 'bg-gray-800 text-white' : 'bg-white border text-gray-600'}`}
+                                        >
+                                            Profissional
+                                        </button>
+                                    </div>
+
+                                    {blockType === 'professional' && (
+                                        <select
+                                            className="w-full mb-2 p-2 text-sm border rounded"
+                                            value={blockProId}
+                                            onChange={e => setBlockProId(e.target.value)}
+                                        >
+                                            <option value="">Selecione o Profissional</option>
+                                            {salon.professionals.map(p => (
+                                                <option key={p.id} value={p.id}>{p.name}</option>
+                                            ))}
+                                        </select>
+                                    )}
+
+                                    <Button size="sm" onClick={handleAddBlock} disabled={!blockDate}>
+                                        Bloquear Dia
+                                    </Button>
+                                </div>
+                            </div>
+
+                            <div className="space-y-2">
+                                <h4 className="font-bold text-sm text-gray-700">Agendamentos do Dia</h4>
+                                {salon.appointments
+                                    .filter(a => a.date.startsWith(blockDate || new Date().toISOString().split('T')[0]))
+                                    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+                                    .map(appt => (
+                                        <div key={appt.id} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg border-l-4 border-brand-500">
+                                            <div>
+                                                <div className="font-bold text-gray-900">{new Date(appt.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+                                                <div className="text-sm text-gray-600">{appt.clientName}</div>
+                                                <div className="text-xs text-gray-400">
+                                                    {salon.services.find(s => s.id === appt.serviceId)?.name} • {salon.professionals.find(p => p.id === appt.professionalId)?.name}
+                                                </div>
+                                            </div>
+                                            <span className={`px-2 py-1 rounded text-xs font-bold ${appt.status === 'completed' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
+                                                {appt.status}
+                                            </span>
+                                        </div>
+                                    ))}
+                                {salon.appointments.filter(a => a.date.startsWith(blockDate || new Date().toISOString().split('T')[0])).length === 0 && (
+                                    <p className="text-center text-gray-400 text-sm py-4">Nenhum agendamento para esta data.</p>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                );
+
+            case 'inventory':
+                return (
+                    <div className="space-y-4">
+                        <div className="flex justify-between items-center">
+                            <h3 className="font-bold text-gray-900">Estoque de Produtos</h3>
+                            <Button size="sm" onClick={() => setIsAddingProduct(true)}>+ Produto</Button>
+                        </div>
+
+                        <div className="grid grid-cols-1 gap-3">
+                            {salon.products.map(prod => (
+                                <div key={prod.id} className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex gap-3">
+                                    {prod.image ? (
+                                        <img src={prod.image} className="w-16 h-16 rounded-lg object-cover bg-gray-100" />
+                                    ) : (
+                                        <div className="w-16 h-16 rounded-lg bg-gray-100 flex items-center justify-center text-gray-400">
+                                            <Package className="w-8 h-8" />
+                                        </div>
+                                    )}
+                                    <div className="flex-1">
+                                        <div className="flex justify-between items-start">
+                                            <h4 className="font-bold text-gray-900">{prod.name}</h4>
+                                            <Badge color={prod.quantity <= (prod.minQuantity || 5) ? 'red' : 'green'}>
+                                                {prod.quantity} {prod.unit}
+                                            </Badge>
+                                        </div>
+                                        {prod.isForSale && (
+                                            <div className="mt-1 text-sm text-brand-600 font-bold">
+                                                Venda: R$ {prod.salePrice?.toFixed(2)}
+                                            </div>
+                                        )}
+                                        <div className="mt-2 flex gap-2">
+                                            <button className="text-xs bg-gray-100 px-2 py-1 rounded hover:bg-gray-200 transition-colors">+ Entrada</button>
+                                            <button className="text-xs bg-gray-100 px-2 py-1 rounded hover:bg-gray-200 transition-colors">- Saída</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                            {salon.products.length === 0 && (
+                                <div className="text-center py-8 text-gray-500 bg-gray-50 rounded-xl border border-dashed border-gray-300">
+                                    <Package className="w-12 h-12 mx-auto text-gray-300 mb-2" />
+                                    <p>Nenhum produto cadastrado.</p>
+                                </div>
+                            )}
+                        </div>
+
+                        {isAddingProduct && (
+                            <div className="fixed inset-0 bg-black/50 z-50 flex items-end sm:items-center justify-center p-4">
+                                <Card className="w-full max-w-sm animate-in slide-in-from-bottom-10">
+                                    <h3 className="font-bold mb-4">Novo Produto</h3>
+                                    <div className="space-y-3">
+                                        <ImageUpload className="w-20 h-20 mx-auto rounded-lg" currentImage={newProduct.image} onImageUpload={(base64) => setNewProduct({ ...newProduct, image: base64 })} />
+                                        <Input label="Nome do Produto" value={newProduct.name} onChange={e => setNewProduct({ ...newProduct, name: e.target.value })} />
+                                        <div className="grid grid-cols-2 gap-3">
+                                            <Input label="Qtd Atual" type="number" value={newProduct.quantity} onChange={e => setNewProduct({ ...newProduct, quantity: e.target.value })} />
+                                            <Input label="Qtd Mínima" type="number" value={newProduct.minQuantity} onChange={e => setNewProduct({ ...newProduct, minQuantity: e.target.value })} />
+                                        </div>
+                                        <div className="flex items-center gap-2 my-2">
+                                            <input type="checkbox" checked={newProduct.isForSale} onChange={e => setNewProduct({ ...newProduct, isForSale: e.target.checked })} id="isForSale" className="w-4 h-4 text-brand-600 rounded" />
+                                            <label htmlFor="isForSale" className="text-sm font-medium text-gray-700">Disponível para Venda?</label>
+                                        </div>
+                                        {newProduct.isForSale && (
+                                            <div className="grid grid-cols-2 gap-3 animate-in fade-in">
+                                                <Input label="Preço de Custo" type="number" value={newProduct.costPrice} onChange={e => setNewProduct({ ...newProduct, costPrice: e.target.value })} />
+                                                <Input label="Preço de Venda" type="number" value={newProduct.salePrice} onChange={e => setNewProduct({ ...newProduct, salePrice: e.target.value })} />
+
+                                                {profitData && (
+                                                    <div className="col-span-2 text-xs text-center bg-gray-50 p-2 rounded">
+                                                        Lucro: R$ {profitData.profit.toFixed(2)} ({profitData.margin.toFixed(0)}%)
+                                                    </div>
+                                                )}
+                                            </div>
+                                        )}
+                                        <div className="flex gap-2 mt-4">
+                                            <Button variant="outline" className="flex-1" onClick={() => setIsAddingProduct(false)}>Cancelar</Button>
+                                            <Button className="flex-1" onClick={handleSaveProduct}>Salvar</Button>
+                                        </div>
+                                    </div>
+                                </Card>
+                            </div>
+                        )}
+                    </div>
+                );
+
             case 'services':
                 return (
                     <div className="space-y-4">
