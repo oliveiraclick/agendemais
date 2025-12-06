@@ -49,33 +49,33 @@ export const Register: React.FC<{
     };
 
     return (
-        <div className="h-full overflow-y-auto bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+        <div className="h-full overflow-y-auto bg-gray-50 flex flex-col justify-center py-6 sm:px-6 lg:px-8">
 
             {/* Header */}
             <div className="sm:mx-auto sm:w-full sm:max-w-md my-auto">
-                <div className="flex justify-center mb-6">
+                <div className="flex justify-center mb-2">
                     <div className="animate-in zoom-in duration-500">
-                        <AgendeLogo className="w-40 h-auto" />
+                        <AgendeLogo className="w-32 h-auto" />
                     </div>
                 </div>
 
-                <h2 className="text-center text-3xl font-extrabold text-gray-900 tracking-tight">
+                <h2 className="text-center text-2xl font-extrabold text-gray-900 tracking-tight">
                     Crie sua conta grátis
                 </h2>
-                <p className="mt-2 text-center text-sm text-gray-600">
+                <p className="mt-1 text-center text-xs text-gray-600">
                     Já tem uma conta? <button onClick={onLoginRedirect} className="font-bold text-brand-600 hover:text-brand-800 transition-colors">Fazer Login</button>
                 </p>
 
-                <div className="mt-8 bg-white py-8 px-4 shadow-xl shadow-gray-200/50 sm:rounded-2xl sm:px-10 border border-gray-100">
-                    <div className="space-y-4">
-                        <div className="grid grid-cols-1 gap-4">
+                <div className="mt-4 bg-white py-6 px-4 shadow-xl shadow-gray-200/50 sm:rounded-2xl sm:px-10 border border-gray-100">
+                    <div className="space-y-3">
+                        <div className="grid grid-cols-2 gap-3">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1.5 ml-1">Seu Nome</label>
+                                <label className="block text-xs font-bold text-gray-700 mb-1 ml-1">Seu Nome</label>
                                 <div className="relative">
-                                    <User className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
+                                    <User className="absolute left-3 top-2.5 w-4 h-4 text-gray-400" />
                                     <input
                                         type="text"
-                                        className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all"
+                                        className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all text-sm"
                                         placeholder="João Silva"
                                         value={formData.ownerName}
                                         onChange={e => setFormData({ ...formData, ownerName: e.target.value })}
@@ -83,13 +83,13 @@ export const Register: React.FC<{
                                 </div>
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1.5 ml-1">Nome do Estabelecimento</label>
+                                <label className="block text-xs font-bold text-gray-700 mb-1 ml-1">Estabelecimento</label>
                                 <div className="relative">
-                                    <Store className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
+                                    <Store className="absolute left-3 top-2.5 w-4 h-4 text-gray-400" />
                                     <input
                                         type="text"
-                                        className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all"
-                                        placeholder="Nome da empresa..."
+                                        className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all text-sm"
+                                        placeholder="Nome..."
                                         value={formData.salonName}
                                         onChange={e => setFormData({ ...formData, salonName: e.target.value })}
                                     />
@@ -98,54 +98,56 @@ export const Register: React.FC<{
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1.5 ml-1">Endereço Completo</label>
+                            <label className="block text-xs font-bold text-gray-700 mb-1 ml-1">Endereço</label>
                             <div className="relative">
-                                <MapPin className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
+                                <MapPin className="absolute left-3 top-2.5 w-4 h-4 text-gray-400" />
                                 <input
                                     type="text"
-                                    className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all"
-                                    placeholder="Rua Exemplo, 123 - Centro, Cidade"
+                                    className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all text-sm"
+                                    placeholder="Rua Exemplo, 123 - Centro"
                                     value={formData.address}
                                     onChange={e => setFormData({ ...formData, address: e.target.value })}
                                 />
                             </div>
                         </div>
 
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1.5 ml-1">E-mail Profissional</label>
-                            <div className="relative">
-                                <Mail className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
-                                <input
-                                    type="email"
-                                    className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all"
-                                    placeholder="contato@suaempresa.com"
-                                    value={formData.email}
-                                    onChange={e => setFormData({ ...formData, email: e.target.value })}
-                                />
+                        <div className="grid grid-cols-2 gap-3">
+                            <div>
+                                <label className="block text-xs font-bold text-gray-700 mb-1 ml-1">E-mail</label>
+                                <div className="relative">
+                                    <Mail className="absolute left-3 top-2.5 w-4 h-4 text-gray-400" />
+                                    <input
+                                        type="email"
+                                        className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all text-sm"
+                                        placeholder="email@m.com"
+                                        value={formData.email}
+                                        onChange={e => setFormData({ ...formData, email: e.target.value })}
+                                    />
+                                </div>
+                            </div>
+
+                            <div>
+                                <label className="block text-xs font-bold text-gray-700 mb-1 ml-1">WhatsApp</label>
+                                <div className="relative">
+                                    <Phone className="absolute left-3 top-2.5 w-4 h-4 text-gray-400" />
+                                    <input
+                                        type="tel"
+                                        className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all text-sm"
+                                        placeholder="(11) 99999-9999"
+                                        value={formData.phone}
+                                        onChange={e => setFormData({ ...formData, phone: e.target.value })}
+                                    />
+                                </div>
                             </div>
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1.5 ml-1">WhatsApp / Celular</label>
+                            <label className="block text-xs font-bold text-gray-700 mb-1 ml-1">Senha</label>
                             <div className="relative">
-                                <Phone className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
-                                <input
-                                    type="tel"
-                                    className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all"
-                                    placeholder="(11) 99999-9999"
-                                    value={formData.phone}
-                                    onChange={e => setFormData({ ...formData, phone: e.target.value })}
-                                />
-                            </div>
-                        </div>
-
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1.5 ml-1">Crie uma Senha</label>
-                            <div className="relative">
-                                <Lock className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
+                                <Lock className="absolute left-3 top-2.5 w-4 h-4 text-gray-400" />
                                 <input
                                     type="password"
-                                    className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all"
+                                    className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all text-sm"
                                     placeholder="••••••••"
                                     value={formData.password}
                                     onChange={e => setFormData({ ...formData, password: e.target.value })}
@@ -153,16 +155,16 @@ export const Register: React.FC<{
                             </div>
                         </div>
 
-                        <div className="pt-4">
+                        <div className="pt-2">
                             <Button
-                                className="w-full py-3.5 text-lg font-bold rounded-xl shadow-lg shadow-brand-200 flex items-center justify-center gap-2"
+                                className="w-full py-3 text-base font-bold rounded-xl shadow-lg shadow-brand-200 flex items-center justify-center gap-2"
                                 onClick={handleSubmit}
                                 disabled={isLoading}
                             >
-                                {isLoading ? 'Criando...' : 'Continuar'} <ArrowRight className="w-5 h-5" />
+                                {isLoading ? '...' : 'Criar Conta'} <ArrowRight className="w-4 h-4" />
                             </Button>
-                            <p className="text-xs text-center text-gray-400 mt-4">
-                                Ao continuar, você concorda com nossos <span className="underline cursor-pointer">Termos de Uso</span>.
+                            <p className="text-[10px] text-center text-gray-400 mt-2">
+                                Termos de Uso aplicáveis.
                             </p>
                         </div>
                     </div>
