@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="h-full overflow-hidden">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0, viewport-fit=cover" />
+    
+    <!-- PWA & Mobile App Capabilities -->
+    <meta name="application-name" content="Agende +" />
+    <meta name="apple-mobile-web-app-title" content="Agende +" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="theme-color" content="#e11d48" />
+    
+    <!-- Icons (Simulated for MVP) -->
+    <link rel="apple-touch-icon" href="https://ui-avatars.com/api/?name=Agende+Plus&background=e11d48&color=fff&rounded=true&bold=true" />
+    <link rel="icon" type="image/png" href="https://ui-avatars.com/api/?name=AP&background=e11d48&color=fff&rounded=true&bold=true" />
+
+    <title>Agende + | Gestão Inteligente</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                50: '#fff1f2',  /* rose-50 */
+                100: '#ffe4e6', /* rose-100 */
+                200: '#fecdd3', /* rose-200 */
+                500: '#f43f5e', /* rose-500 */
+                600: '#e11d48', /* rose-600 - Nova Cor Primária */
+                700: '#be123c', /* rose-700 */
+                900: '#881337', /* rose-900 */
+              }
+            },
+            animation: {
+              blob: "blob 7s infinite",
+              "bounce-subtle": "bounce-subtle 2s infinite",
+            },
+            keyframes: {
+              "bounce-subtle": {
+                "0%, 100%": { transform: "translateY(-5%)", animationTimingFunction: "cubic-bezier(0.8,0,1,1)" },
+                "50%": { transform: "translateY(0)", animationTimingFunction: "cubic-bezier(0,0,0.2,1)" },
+              },
+              blob: {
+                "0%": {
+                  transform: "translate(0px, 0px) scale(1)",
+                },
+                "33%": {
+                  transform: "translate(30px, -50px) scale(1.1)",
+                },
+                "66%": {
+                  transform: "translate(-20px, 20px) scale(0.9)",
+                },
+                "100%": {
+                  transform: "translate(0px, 0px) scale(1)",
+                },
+              },
+            },
+          }
+        }
+      }
+    </script>
+    <style>
+      /* Comportamento de App Nativo */
+      body {
+        height: 100%;
+        width: 100%;
+        overflow: hidden; /* O scroll acontece dentro dos containers, não no body */
+        overscroll-behavior: none; /* Previne o efeito elástico do Mac/iOS no body */
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+      }
+      #root {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+      /* Esconder scrollbar mas permitir scroll */
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .no-scrollbar {
+        -ms-overflow-style: none;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+      .custom-scrollbar::-webkit-scrollbar {
+        width: 6px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-track {
+        background: #f1f1f1;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #d1d5db;
+        border-radius: 10px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: #9ca3af;
+      }
+      
+      /* Ajuste para Notch do iPhone */
+      .pb-safe-area {
+        padding-bottom: env(safe-area-inset-bottom, 20px);
+      }
+      .pt-safe-area {
+        padding-top: env(safe-area-inset-top, 20px);
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://aistudiocdn.com/react@^19.2.1",
+    "react-dom/client": "https://aistudiocdn.com/react-dom@^19.2.1/client",
+    "react-dom": "https://aistudiocdn.com/react-dom@^19.2.1",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.1/",
+    "react/": "https://aistudiocdn.com/react@^19.2.1/",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.30.0",
+    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.555.0",
+    "recharts": "https://aistudiocdn.com/recharts@^3.5.1",
+    "@supabase/supabase-js": "https://aistudiocdn.com/@supabase/supabase-js@^2.86.2"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body class="bg-gray-50 text-gray-900 antialiased">
+    <div id="root"></div>
+    <script type="module" src="./index.tsx"></script>
+  <script type="module" src="/index.tsx"></script>
+</body>
+</html>
