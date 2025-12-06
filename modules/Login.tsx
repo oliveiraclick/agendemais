@@ -97,9 +97,7 @@ export const Login: React.FC<{
             <AgendeLogo className="w-40 h-auto" />
           </div>
 
-          <h2 className="text-center text-3xl font-extrabold text-gray-900 tracking-tight">
-            Agende +
-          </h2>
+
           <p className="mt-2 text-center text-sm text-gray-600">
             Acesso Restrito
           </p>
