@@ -21,6 +21,8 @@ export const Register: React.FC<{
 
     const [isLoading, setIsLoading] = useState(false);
 
+    const [isRegistered, setIsRegistered] = useState(false);
+
     const handleSubmit = () => {
         if (!formData.ownerName || !formData.salonName || !formData.email || !formData.password || !formData.address) {
             alert("Por favor, preencha todos os campos obrigatórios.");
@@ -41,12 +43,54 @@ export const Register: React.FC<{
             );
 
             setTimeout(() => {
-                // Instead of ID, we pass the email to pre-fill the login
-                onSuccess(formData.email);
+                // Determine success and show payment screen
+                setIsRegistered(true);
                 setIsLoading(false);
             }, 500);
         }, 1500);
     };
+
+    if (isRegistered) {
+        return (
+            <div className="h-full overflow-y-auto bg-gray-50 flex flex-col justify-center py-6 sm:px-6 lg:px-8">
+                <div className="sm:mx-auto sm:w-full sm:max-w-md my-auto">
+                    <div className="flex justify-center mb-6">
+                        <div className="animate-in zoom-in duration-500 bg-green-100 p-4 rounded-full">
+                            <CalendarCheck className="w-16 h-16 text-green-600" />
+                        </div>
+                    </div>
+
+                    <h2 className="text-center text-3xl font-extrabold text-gray-900 tracking-tight mb-2">
+                        Conta criada!
+                    </h2>
+                    <p className="text-center text-gray-600 mb-8 px-4">
+                        Sua conta foi registrada com sucesso. Para começar a usar, realize o pagamento da taxa de adesão.
+                    </p>
+
+                    <div className="mt-4 bg-white py-8 px-4 shadow-xl shadow-gray-200/50 sm:rounded-2xl sm:px-10 border border-gray-100 text-center space-y-4">
+
+                        <Button
+                            className="w-full py-4 text-lg font-bold bg-green-600 hover:bg-green-700 text-white rounded-xl shadow-lg shadow-green-200 flex items-center justify-center gap-2 animate-pulse"
+                            onClick={() => window.open('https://pay.kiwify.com.br/ZqDT7Lt', '_blank')}
+                        >
+                            Realizar Pagamento <ArrowRight className="w-5 h-5" />
+                        </Button>
+
+                        <div className="pt-4 border-t border-gray-100">
+                            <p className="text-sm text-gray-500 mb-3">Já realizou o pagamento?</p>
+                            <Button
+                                variant="outline"
+                                className="w-full py-2 text-sm font-medium text-gray-700"
+                                onClick={() => onSuccess(formData.email)}
+                            >
+                                Ir para o Login
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="h-full overflow-y-auto bg-gray-50 flex flex-col justify-center py-6 sm:px-6 lg:px-8">
