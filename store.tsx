@@ -37,8 +37,10 @@ const INITIAL_PLANS: SaaSPlan[] = [
 const INITIAL_SALONS: Salon[] = [
     {
         id: '1',
+        createdAt: new Date(Date.now() - 30 * 86400000).toISOString(), // Created 30 days ago
         name: 'Barbearia Vintage',
         ownerEmail: 'contato@vintage.com',
+        // ... (rest of props)
         password: '123',
         slug: 'vintage-barber',
         description: 'Estilo clássico para o homem moderno.',
@@ -53,7 +55,6 @@ const INITIAL_SALONS: Salon[] = [
             { id: 'p2', name: 'Pedro Santos', email: 'pedro@vintage.com', avatarUrl: 'https://i.pravatar.cc/150?u=2', commissionRate: 40, productCommissionRate: 15, password: '123' },
         ],
         appointments: [
-            // Adicionando histórico para o cliente de teste ver nos favoritos
             {
                 id: 'appt-demo-1',
                 salonId: '1',
@@ -101,8 +102,10 @@ const INITIAL_SALONS: Salon[] = [
     },
     {
         id: '2',
+        createdAt: new Date(Date.now() - 2 * 86400000).toISOString(), // Created 2 days ago (mock trial)
         name: 'Lava Rápido Turbo',
         ownerEmail: 'gerente@lavarapidoturbo.com',
+        // ... (rest of props)
         password: '123',
         slug: 'lava-rapido-turbo',
         description: 'Seu carro novo de novo em minutos.',
@@ -151,11 +154,12 @@ const INITIAL_SALONS: Salon[] = [
             'https://images.unsplash.com/photo-1601362840469-51e4d8d58785?auto=format&fit=crop&q=80&w=500',
             'https://images.unsplash.com/photo-1520340356584-7eb3cb40645e?auto=format&fit=crop&q=80&w=500'
         ],
-        subscriptionStatus: 'active',
+        subscriptionStatus: 'trial',
         monthlyFee: 0,
         nextBillingDate: new Date(Date.now() + 10 * 86400000).toISOString()
     }
 ];
+
 
 const INITIAL_COUPONS: Coupon[] = [
     { id: 'c1', code: 'PROMO10', discountPercent: 10, active: true, uses: 5 },
@@ -296,6 +300,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
         const newSalon: Salon = {
             id: generateId(),
+            createdAt: new Date().toISOString(),
             name,
             ownerEmail: email || `admin@${name.toLowerCase().replace(/\s+/g, '')}.com`,
             password: password || '123',
@@ -313,7 +318,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
             closeTime: '18:00',
             slotInterval: 30,
             blockedPeriods: [],
-            subscriptionStatus: 'active',
+            subscriptionStatus: 'trial',
             monthlyFee: fee,
             appliedCoupon: couponCode,
             nextBillingDate: new Date(Date.now() + 30 * 86400000).toISOString(),
@@ -327,11 +332,12 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
             // Map to DB columns
             await supabase.from('salons').insert([{
                 id: newSalon.id,
+                created_at: newSalon.createdAt,
                 name: newSalon.name,
                 plan: newSalon.plan,
                 address: newSalon.address,
                 monthly_fee: newSalon.monthlyFee,
-                subscription_status: 'active'
+                subscription_status: 'trial'
             }]);
         }
     };

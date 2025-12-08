@@ -14,7 +14,8 @@ import {
 import { generateSalonDescription } from '../services/geminiService';
 
 export const TenantAdmin: React.FC<{ salonId: string; onBack: () => void }> = ({ salonId, onBack }) => {
-    const { salons, clients, updateSalon, addAppointment, addBlockedPeriod, addTransaction, addProduct, updateProduct, removeBlockedPeriod } = useStore();
+    const { salons, clients, updateSalon, addAppointment, addBlockedPeriod, addTransaction, addProduct, updateProduct, removeBlockedPeriod, saasPlans } = useStore();
+
     const salon = salons.find(s => s.id === salonId);
     const [activeTab, setActiveTab] = useState<'dashboard' | 'agenda' | 'inventory' | 'team' | 'finance' | 'settings' | 'marketing'>('dashboard');
     const [isGeneratingAi, setIsGeneratingAi] = useState(false);
@@ -54,7 +55,38 @@ export const TenantAdmin: React.FC<{ salonId: string; onBack: () => void }> = ({
     const [qrModalOpen, setQrModalOpen] = useState(false);
     const [selectedQrPro, setSelectedQrPro] = useState<Professional | null>(null);
 
+    // Payment Modal for Extra Pro
+    const [showAddProPaymentModal, setShowAddProPaymentModal] = useState(false);
+
     if (!salon) return <div>Salão não encontrado</div>;
+
+
+    // --- TRIAL LOGIC ---
+    let trialBanner = null;
+    if (salon.subscriptionStatus === 'trial' && salon.createdAt) {
+        const created = new Date(salon.createdAt);
+        const now = new Date();
+        const diffTime = Math.abs(now.getTime() - created.getTime());
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        const daysRemaining = 7 - diffDays;
+
+        if (daysRemaining >= 0) {
+            trialBanner = (
+                <div className="mb-4 bg-indigo-600 text-white p-3 rounded-lg shadow-md text-center text-sm font-medium flex flex-col sm:flex-row justify-center items-center gap-2 animate-in slide-in-from-top duration-500">
+                    <div className="flex items-center gap-2">
+                        <Sparkles className="w-4 h-4 text-yellow-300" />
+                        <span>Período de Teste Gratuito: Restam <strong>{daysRemaining} dias</strong>.</span>
+                    </div>
+                    <button
+                        onClick={() => window.open('https://pay.kiwify.com.br/ZqDT7Lt', '_blank')}
+                        className="bg-white text-indigo-600 px-4 py-1.5 rounded-full text-xs font-bold hover:bg-indigo-50 transition-colors shadow-sm"
+                    >
+                        Assinar Agora
+                    </button>
+                </div>
+            );
+        }
+    }
 
     // UNLOCK ALL FEATURES FOR EVERYONE
     const isPro = true;
@@ -641,16 +673,69 @@ export const TenantAdmin: React.FC<{ salonId: string; onBack: () => void }> = ({
 
                             <button
                                 onClick={() => {
-                                    setEditingProId(null);
-                                    setNewPro({ name: '', email: '', commission: '', productCommission: '', avatar: '' });
-                                    setIsAddingPro(true);
+                                    // Check Limit
+                                    const currentPros = salon.professionals.length;
+                                    const plan = saasPlans.find(p => p.id === salon.plan);
+                                    const maxPros = plan?.maxProfessionals || 1;
+
+                                    // Exception: 'redes' plan might have higher limit or unlimited logic handled in Store, 
+                                    // but here we check the static definition first. 
+                                    // If plan is 'professional' (Start), limit is 1.
+
+                                    if (currentPros >= maxPros) {
+                                        setShowAddProPaymentModal(true);
+                                    } else {
+                                        setEditingProId(null);
+                                        setNewPro({ name: '', email: '', commission: '', productCommission: '', avatar: '' });
+                                        setIsAddingPro(true);
+                                    }
                                 }}
-                                className="border-2 border-dashed border-gray-300 rounded-xl flex flex-col items-center justify-center h-40 bg-gray-50 hover:bg-white"
+                                className="border-2 border-dashed border-gray-300 rounded-xl flex flex-col items-center justify-center h-40 bg-gray-50 hover:bg-white transition-colors"
                             >
                                 <Plus className="w-8 h-8 text-gray-400 mb-2" />
                                 <span className="text-xs text-gray-500">Adicionar</span>
                             </button>
                         </div>
+
+                        {/* Payment Modal for Extra Pro */}
+                        <Modal isOpen={showAddProPaymentModal} onClose={() => setShowAddProPaymentModal(false)} title="Limite de Profissionais Atingido">
+                            <div className="p-4 text-center">
+                                <div className="bg-orange-50 p-4 rounded-full w-20 h-20 mx-auto flex items-center justify-center mb-4">
+                                    <Lock className="w-10 h-10 text-orange-500" />
+                                </div>
+                                <h3 className="text-lg font-bold text-gray-900 mb-2">Expanda sua Equipe!</h3>
+                                <p className="text-gray-600 mb-6">
+                                    Seu plano atual permite apenas <b>{saasPlans.find(p => p.id === salon.plan)?.maxProfessionals || 1} profissional(is)</b>.
+                                    Para adicionar mais membros, é necessário contratar uma vaga extra.
+                                </p>
+
+                                <div className="space-y-3">
+                                    <Button
+                                        className="w-full py-3 text-base font-bold bg-green-600 hover:bg-green-700 text-white rounded-xl shadow-lg shadow-green-200"
+                                        onClick={() => window.open('https://pay.kiwify.com.br/RBJo25T', '_blank')}
+                                    >
+                                        Contratar Vaga Extra
+                                    </Button>
+
+                                    <div className="text-xs text-gray-400 my-2">ou</div>
+
+                                    <Button
+                                        variant="outline"
+                                        className="w-full"
+                                        onClick={() => {
+                                            setShowAddProPaymentModal(false);
+                                            // Unlock the form assuming they paid
+                                            setEditingProId(null);
+                                            setNewPro({ name: '', email: '', commission: '', productCommission: '', avatar: '' });
+                                            setIsAddingPro(true);
+                                        }}
+                                    >
+                                        Já realizei o pagamento
+                                    </Button>
+                                </div>
+                            </div>
+                        </Modal>
+
 
                         {isAddingPro && (
                             <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
@@ -1254,6 +1339,7 @@ export const TenantAdmin: React.FC<{ salonId: string; onBack: () => void }> = ({
             }
         >
             <div className="p-4">
+                {trialBanner}
                 {renderContent()}
             </div>
         </AppShell>

@@ -1,6 +1,6 @@
 
 export type PlanType = 'start' | 'professional' | 'redes';
-export type SubscriptionStatus = 'active' | 'late' | 'cancelled';
+export type SubscriptionStatus = 'active' | 'late' | 'cancelled' | 'trial';
 export type TransactionType = 'income' | 'expense';
 export type PaymentMethod = 'cash' | 'pix' | 'credit_card' | 'debit_card' | 'credit_split';
 
@@ -122,28 +122,27 @@ export interface BlockedPeriod {
 
 export interface Salon {
   id: string;
+  createdAt: string; // New field for trial calculation
   name: string;
-  ownerEmail?: string; // New field for login
-  password?: string; // New field for owner auth
-  slug: string; // for url simulation
+  ownerEmail?: string;
+  password?: string;
+  slug: string;
   description: string;
   plan: PlanType;
   services: Service[];
   professionals: Professional[];
   appointments: Appointment[];
-  transactions: Transaction[]; // New Financial Field
-  products: Product[]; // New Inventory Field
+  transactions: Transaction[];
+  products: Product[];
   address: string;
-  // New settings fields
   coverImage?: string;
   category?: string;
   slotInterval?: number;
   openTime?: string;
   closeTime?: string;
   blockedPeriods?: BlockedPeriod[];
-  revenueGoal?: number; // New Financial Goal
-  allowClientCancellation?: boolean; // New Toggle
-  // Social & About
+  revenueGoal?: number;
+  allowClientCancellation?: boolean;
   aboutUs?: string;
   socials?: {
     instagram?: string;
@@ -152,12 +151,10 @@ export interface Salon {
     website?: string;
   };
   gallery?: string[];
-  // Financial fields for SaaS
-  subscriptionStatus: 'active' | 'late' | 'cancelled';
+  subscriptionStatus: SubscriptionStatus;
   monthlyFee: number;
   nextBillingDate: string;
   appliedCoupon?: string;
-  // New Features
   reviews?: Review[];
   waitlist?: WaitlistEntry[];
   loyaltyProgram?: {
@@ -191,4 +188,5 @@ export interface StoreContextType {
   updateSaaSPlan: (plan: SaaSPlan) => void;
   createCoupon: (code: string, percent: number) => void;
   toggleSalonStatus: (salonId: string) => void;
+  addReview: (salonId: string, review: Review) => void; // Added back
 }

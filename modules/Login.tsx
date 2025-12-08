@@ -47,6 +47,20 @@ export const Login: React.FC<{
         alert('Senha incorreta.');
         return;
       }
+
+      // CHECK TRIAL STATUS
+      if (ownerSalon.subscriptionStatus === 'trial' && ownerSalon.createdAt) {
+        const created = new Date(ownerSalon.createdAt);
+        const now = new Date();
+        const diffTime = Math.abs(now.getTime() - created.getTime());
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        if (diffDays > 7) {
+          setShowPaymentLock(true);
+          return;
+        }
+      }
+
       onLogin(ownerSalon.id, false);
       return;
     }
@@ -75,6 +89,50 @@ export const Login: React.FC<{
 
     alert('Usuário ou senha inválidos.');
   };
+
+  // Lock Screen State
+  const [showPaymentLock, setShowPaymentLock] = useState(false);
+
+  if (showPaymentLock) {
+    return (
+      <div className="h-full overflow-y-auto bg-gray-50 flex flex-col justify-center py-6 sm:px-6 lg:px-8">
+        <div className="sm:mx-auto sm:w-full sm:max-w-md my-auto">
+          <div className="flex justify-center mb-6">
+            <div className="animate-in zoom-in duration-500 bg-red-100 p-4 rounded-full">
+              <Lock className="w-16 h-16 text-red-600" />
+            </div>
+          </div>
+
+          <h2 className="text-center text-3xl font-extrabold text-gray-900 tracking-tight mb-2">
+            Período de Teste Expirado
+          </h2>
+          <p className="text-center text-gray-600 mb-8 px-4">
+            Seu período de teste gratuito de 7 dias acabou. Para continuar usando o Agende+, realize o pagamento.
+          </p>
+
+          <div className="mt-4 bg-white py-8 px-4 shadow-xl shadow-gray-200/50 sm:rounded-2xl sm:px-10 border border-gray-100 text-center space-y-4">
+
+            <Button
+              className="w-full py-4 text-lg font-bold bg-green-600 hover:bg-green-700 text-white rounded-xl shadow-lg shadow-green-200 flex items-center justify-center gap-2 animate-pulse"
+              onClick={() => window.open('https://pay.kiwify.com.br/ZqDT7Lt', '_blank')}
+            >
+              <CalendarCheck className="w-5 h-5" /> Liberar Acesso Agora
+            </Button>
+
+            <div className="pt-4 border-t border-gray-100">
+              <Button
+                variant="outline"
+                className="w-full py-2 text-sm font-medium text-gray-700"
+                onClick={() => setShowPaymentLock(false)}
+              >
+                Voltar para Login
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const handleClientLogin = () => {
     if (phone.length < 8) {
