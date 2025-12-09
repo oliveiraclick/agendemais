@@ -162,11 +162,12 @@ export const MobileNavItem: React.FC<{
   onClick: () => void;
 }> = ({ icon, label, active, onClick }) => (
   <button
+    type="button"
     onClick={onClick}
     className={`flex flex-col items-center justify-center w-full h-full space-y-1 transition-all active:scale-95 ${active ? 'text-brand-600' : 'text-gray-400 hover:text-gray-600'}`}
   >
     <div className={`${active ? 'bg-brand-50 p-1.5 rounded-xl' : ''} transition-all duration-300`}>
-      {React.cloneElement(icon as React.ReactElement, {
+      {React.cloneElement(icon as React.ReactElement<any>, {
         size: 24,
         strokeWidth: active ? 2.5 : 2,
         className: active ? 'animate-bounce-subtle' : ''

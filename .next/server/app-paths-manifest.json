@@ -1,0 +1,14 @@
+{
+  "/_global-error/page": "app/_global-error/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/api/ai/route": "app/api/ai/route.js",
+  "/booking/[salonId]/page": "app/booking/[salonId]/page.js",
+  "/dashboard/admin/page": "app/dashboard/admin/page.js",
+  "/dashboard/pro/[salonId]/[professionalId]/page": "app/dashboard/pro/[salonId]/[professionalId]/page.js",
+  "/dashboard/tenant/[id]/page": "app/dashboard/tenant/[id]/page.js",
+  "/directory/page": "app/directory/page.js",
+  "/login/page": "app/login/page.js",
+  "/page": "app/page.js",
+  "/portal/page": "app/portal/page.js",
+  "/register/page": "app/register/page.js"
+}
