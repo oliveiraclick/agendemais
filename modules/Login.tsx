@@ -4,6 +4,7 @@ import { useStore } from '../store';
 import { Button, Card, Input, AgendeLogo } from '../components/UI';
 import { LogIn, Store, Lock, User, Phone, Mail, CalendarCheck } from 'lucide-react';
 import { useInstallPrompt } from '../contexts/InstallContext';
+import { ContextualHelp } from '../components/ContextualHelp';
 
 export const Login: React.FC<{
   context: 'admin' | 'tenant';
@@ -163,9 +164,9 @@ export const Login: React.FC<{
             Acesso Restrito
           </p>
 
-          <button onClick={onHelp} className="mt-4 flex items-center gap-2 text-xs font-bold text-gray-400 hover:text-brand-600 transition-colors bg-white px-4 py-2 rounded-full border border-gray-100 shadow-sm">
-            <CalendarCheck className="w-4 h-4" /> Ajuda / Tutoriais
-          </button>
+          <div className="mt-4 flex justify-center">
+            <ContextualHelp topic="login" />
+          </div>
         </div>
       </div>
 

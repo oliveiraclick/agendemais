@@ -7,6 +7,7 @@ import { Service, Professional, Product, Review } from '../types';
 import { ReviewList } from '../components/ReviewList';
 import { StarRating } from '../components/StarRating';
 import { WaitlistModal } from '../components/WaitlistModal';
+import { ContextualHelp, HelpTopic } from '../components/ContextualHelp';
 
 export const PublicBooking: React.FC<{
     salonId: string;
@@ -829,12 +830,7 @@ export const PublicBooking: React.FC<{
 
                                         {/* Help Button */}
                                         <div className="flex justify-center mt-4">
-                                            <button
-                                                onClick={onHelp}
-                                                className="flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-brand-600 transition-colors bg-white px-4 py-2 rounded-full shadow-sm border border-gray-100"
-                                            >
-                                                <Star className="w-4 h-4" /> Central de Ajuda
-                                            </button>
+                                            <ContextualHelp topic="booking-profile" />
                                         </div>
 
                                         {/* Add ref for scroll targeting */}

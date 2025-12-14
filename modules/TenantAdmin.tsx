@@ -12,6 +12,7 @@ import {
     Target, Package, Megaphone, Gift, AlertTriangle, MessageCircle, ShoppingBag, Trash2, CalendarRange, Ban, BookOpen
 } from 'lucide-react';
 import { generateSalonDescription } from '../services/geminiService';
+import { ContextualHelp, HelpTopic } from '../components/ContextualHelp';
 
 export const TenantAdmin: React.FC<{ salonId: string; onBack: () => void; onHelp?: () => void }> = ({ salonId, onBack, onHelp }) => {
     const { salons, clients, updateSalon, addAppointment, addBlockedPeriod, addTransaction, addProduct, updateProduct, removeBlockedPeriod, saasPlans } = useStore();
@@ -1328,6 +1329,19 @@ export const TenantAdmin: React.FC<{ salonId: string; onBack: () => void; onHelp
         </div>
     );
 
+    const getHelpTopic = (tab: typeof activeTab): HelpTopic => {
+        switch (tab) {
+            case 'dashboard': return 'owner-dashboard';
+            case 'agenda': return 'owner-agenda';
+            case 'inventory': return 'owner-inventory';
+            case 'team': return 'owner-team';
+            case 'marketing': return 'owner-marketing';
+            case 'finance': return 'owner-finance';
+            case 'settings': return 'owner-settings';
+            default: return 'owner-dashboard';
+        }
+    };
+
     return (
         <AppShell
             header={Header}
@@ -1344,6 +1358,9 @@ export const TenantAdmin: React.FC<{ salonId: string; onBack: () => void; onHelp
             }
         >
             <div className="p-4">
+                <div className="flex justify-end mb-4">
+                    <ContextualHelp topic={getHelpTopic(activeTab)} />
+                </div>
                 {trialBanner}
                 {renderContent()}
             </div>
