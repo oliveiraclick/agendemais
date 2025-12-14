@@ -135,13 +135,13 @@ export const AppShell: React.FC<{
       )}
 
       {/* Scrollable Content */}
-      <div className="flex-1 overflow-y-auto overflow-x-hidden no-scrollbar pb-24">
+      <div className="flex-1 overflow-y-auto overflow-x-hidden no-scrollbar">
         {children}
       </div>
 
-      {/* Fixed Bottom Nav */}
+      {/* Static Flex Footer (Naturally pushes content up) */}
       {bottomNav && (
-        <div className="flex-none fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50 pb-safe-area shadow-2xl">
+        <div className="flex-none w-full bg-white border-t border-gray-200 z-50 pb-safe-area shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
           {bottomNav}
         </div>
       )}
