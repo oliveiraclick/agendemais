@@ -52,10 +52,13 @@ export const Badge: React.FC<{ children: React.ReactNode; color?: 'green' | 'blu
   );
 };
 
+import { createPortal } from 'react-dom';
+
 export const Modal: React.FC<{ isOpen: boolean; onClose: () => void; title: string; children: React.ReactNode }> = ({ isOpen, onClose, title, children }) => {
   if (!isOpen) return null;
-  return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
+
+  return createPortal(
+    <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center sm:p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
       {/* Mobile: Bottom Sheet | Desktop: Modal */}
       <div className="bg-white w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl shadow-2xl animate-in slide-in-from-bottom duration-300 sm:zoom-in-95 overflow-hidden max-h-[90vh] flex flex-col">
         <div className="flex justify-between items-center px-6 py-4 border-b border-gray-100">
@@ -68,7 +71,8 @@ export const Modal: React.FC<{ isOpen: boolean; onClose: () => void; title: stri
           {children}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 
