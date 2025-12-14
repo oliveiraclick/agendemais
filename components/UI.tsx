@@ -135,7 +135,7 @@ export const AppShell: React.FC<{
       )}
 
       {/* Scrollable Content */}
-      <div className="flex-1 overflow-y-auto overflow-x-hidden no-scrollbar">
+      <div className="flex-1 overflow-y-auto overflow-x-hidden no-scrollbar pb-32">
         {children}
       </div>
 
