@@ -9,11 +9,11 @@ import {
     LayoutDashboard, Calendar, Users, Scissors, DollarSign, Settings,
     Sparkles, Lock, LogOut, Save, Plus, X, Check, Clock, CreditCard, Ticket,
     TrendingUp, TrendingDown, Wallet, Edit, Banknote, QrCode,
-    Target, Package, Megaphone, Gift, AlertTriangle, MessageCircle, ShoppingBag, Trash2, CalendarRange, Ban
+    Target, Package, Megaphone, Gift, AlertTriangle, MessageCircle, ShoppingBag, Trash2, CalendarRange, Ban, BookOpen
 } from 'lucide-react';
 import { generateSalonDescription } from '../services/geminiService';
 
-export const TenantAdmin: React.FC<{ salonId: string; onBack: () => void }> = ({ salonId, onBack }) => {
+export const TenantAdmin: React.FC<{ salonId: string; onBack: () => void; onHelp?: () => void }> = ({ salonId, onBack, onHelp }) => {
     const { salons, clients, updateSalon, addAppointment, addBlockedPeriod, addTransaction, addProduct, updateProduct, removeBlockedPeriod, saasPlans } = useStore();
 
     const salon = salons.find(s => s.id === salonId);
@@ -1286,7 +1286,12 @@ export const TenantAdmin: React.FC<{ salonId: string; onBack: () => void }> = ({
                             </div>
                         </Card>
 
-                        <div className="p-4">
+                        <div className="p-4 space-y-3">
+                            <Button variant="secondary" className="w-full flex justify-center items-center gap-2" onClick={onHelp}>
+                                <div className="p-1 bg-blue-100 rounded-full"><BookOpen className="w-4 h-4 text-blue-600" /></div>
+                                Central de Ajuda & Tutoriais
+                            </Button>
+
                             <Button variant="danger" className="w-full flex justify-center items-center gap-2" onClick={onBack}>
                                 <LogOut className="w-4 h-4" /> Sair do App
                             </Button>

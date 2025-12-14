@@ -13,7 +13,8 @@ export const Login: React.FC<{
   onClientLogin?: (phone: string) => void;
   onBack: () => void;
   onRegister?: () => void;
-}> = ({ context, salonId, prefilledEmail, onLogin, onClientLogin, onRegister, onBack }) => {
+  onHelp?: () => void;
+}> = ({ context, salonId, prefilledEmail, onLogin, onClientLogin, onRegister, onBack, onHelp }) => {
   const { salons } = useStore();
   const { showPrompt, isInstallable } = useInstallPrompt();
 
@@ -161,6 +162,10 @@ export const Login: React.FC<{
           <p className="mt-2 text-center text-sm text-gray-600">
             Acesso Restrito
           </p>
+
+          <button onClick={onHelp} className="mt-4 flex items-center gap-2 text-xs font-bold text-gray-400 hover:text-brand-600 transition-colors bg-white px-4 py-2 rounded-full border border-gray-100 shadow-sm">
+            <CalendarCheck className="w-4 h-4" /> Ajuda / Tutoriais
+          </button>
         </div>
       </div>
 

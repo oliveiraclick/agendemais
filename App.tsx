@@ -14,6 +14,7 @@ import { PrivacyPolicy } from './modules/PrivacyPolicy';
 import { InstallProvider } from './contexts/InstallContext';
 import { ClientPortal } from './modules/ClientPortal';
 import { InstallPrompt } from './components/InstallPrompt';
+import { HelpCenter } from './modules/HelpCenter';
 
 type ViewState =
   | { type: 'register' }
@@ -25,6 +26,7 @@ type ViewState =
   | { type: 'public'; salonId: string; professionalId?: string; fromPortal?: boolean; clientPhone?: string }
   | { type: 'client-portal'; clientPhone: string }
   | { type: 'how-it-works' }
+  | { type: 'help-center'; role?: 'owner' | 'client' }
   | { type: 'terms' }
   | { type: 'privacy' };
 
@@ -78,6 +80,8 @@ const AppContent: React.FC = () => {
       );
     case 'how-it-works':
       return <HowItWorks onBack={goRegister} />;
+    case 'help-center':
+      return <HelpCenter onBack={goRegister} initialRole={view.role} />;
     case 'terms':
       return <TermsOfUse onBack={goRegister} />;
     case 'privacy':
@@ -104,6 +108,7 @@ const AppContent: React.FC = () => {
           }}
           onBack={goRegister}
           onRegister={goRegister}
+          onHelp={() => setView({ type: 'help-center' })}
         />
       );
     case 'directory':
@@ -123,7 +128,7 @@ const AppContent: React.FC = () => {
     case 'super-admin':
       return <SuperAdmin onNavigate={navigate} onLogout={goHome} />;
     case 'tenant':
-      return <TenantAdmin salonId={view.salonId} onBack={goHome} />;
+      return <TenantAdmin salonId={view.salonId} onBack={goHome} onHelp={() => setView({ type: 'help-center', role: 'owner' })} />;
     case 'professional':
       return <ProfessionalPanel salonId={view.salonId} professionalId={view.professionalId} onLogout={goHome} />;
     case 'public':
@@ -141,6 +146,7 @@ const AppContent: React.FC = () => {
           }
         }}
         onAdminAccess={handleSecretTenantAccess}
+        onHelp={() => setView({ type: 'help-center', role: 'client' })}
       />;
     default:
       return <div>Error: Unknown view</div>;

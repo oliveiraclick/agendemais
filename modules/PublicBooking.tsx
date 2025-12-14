@@ -15,7 +15,8 @@ export const PublicBooking: React.FC<{
     clientPhone?: string; // If from portal, pass the logged user phone
     onBack: () => void;
     onAdminAccess: (salonId: string) => void;
-}> = ({ salonId, professionalId, fromPortal, clientPhone: portalClientPhone, onBack, onAdminAccess }) => {
+    onHelp?: () => void;
+}> = ({ salonId, professionalId, fromPortal, clientPhone: portalClientPhone, onBack, onAdminAccess, onHelp }) => {
     const { salons, addAppointment, saveClient, getClientByPhone } = useStore();
     const salon = salons.find(s => s.id === salonId);
 
@@ -824,6 +825,16 @@ export const PublicBooking: React.FC<{
                                                 <span>Total</span>
                                                 <span className="text-brand-600">R$ {finalTotal.toFixed(2)}</span>
                                             </div>
+                                        </div>
+
+                                        {/* Help Button */}
+                                        <div className="flex justify-center mt-4">
+                                            <button
+                                                onClick={onHelp}
+                                                className="flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-brand-600 transition-colors bg-white px-4 py-2 rounded-full shadow-sm border border-gray-100"
+                                            >
+                                                <Star className="w-4 h-4" /> Central de Ajuda
+                                            </button>
                                         </div>
 
                                         {/* Add ref for scroll targeting */}
