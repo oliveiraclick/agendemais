@@ -32,6 +32,17 @@ const AppContent: React.FC = () => {
   // START AT REGISTER
   const [view, setView] = useState<ViewState>({ type: 'register' });
 
+  // SMART ROUTING: Detect PWA Standalone Mode
+  React.useEffect(() => {
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches ||
+      (window.navigator as any).standalone === true;
+
+    if (isStandalone) {
+      // Installed app -> Go to Login
+      setView({ type: 'login', context: 'tenant' });
+    }
+  }, []);
+
   const navigate = (newView: 'tenant' | 'public', salonId: string) => {
     setView({ type: newView, salonId });
   };
