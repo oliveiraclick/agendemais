@@ -146,7 +146,7 @@ export const Login: React.FC<{
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-4 px-4 sm:px-6 lg:px-8 relative">
+    <div className="h-full overflow-y-auto bg-gray-50 flex flex-col justify-center py-4 px-4">
 
       {/* Header / Logo Section */}
       <div className="mx-auto w-full max-w-sm">
@@ -156,10 +156,9 @@ export const Login: React.FC<{
           </div>
 
 
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Acesso Restrito
+          <p className="mt-1 text-center text-sm text-gray-600">
+            Acesso Restrito <span className="text-[10px] text-gray-400">v1.1.0</span>
           </p>
-          <p className="text-center text-[10px] text-gray-400">v1.0.9</p>
 
           <div className="mt-4 flex justify-center">
             <ContextualHelp topic="login" />
@@ -167,146 +166,112 @@ export const Login: React.FC<{
         </div>
       </div>
 
-      <div className="mt-2 mx-auto w-full max-w-sm">
-        <Card className="py-6 px-4 shadow-xl shadow-gray-200/50 border-0 rounded-2xl overflow-hidden">
+      <div className="mt-3 bg-white py-5 px-4 shadow-xl shadow-gray-200/50 rounded-2xl border border-gray-100">
 
-          {/* Tabs */}
-          <div className="flex bg-gray-100 p-1 rounded-lg mb-6">
-            <button
-              className={`flex-1 py-2 text-sm font-bold rounded-md transition-all ${activeTab === 'company' ? 'bg-white text-brand-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
-              onClick={() => setActiveTab('company')}
-            >
-              Empresa
-            </button>
-            <button
-              className={`flex-1 py-2 text-sm font-bold rounded-md transition-all ${activeTab === 'client' ? 'bg-white text-brand-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
-              onClick={() => setActiveTab('client')}
-            >
-              Cliente
-            </button>
-          </div>
-
-          <div className="space-y-6">
-
-            {activeTab === 'company' ? (
-              <div className="animate-in fade-in slide-in-from-right-4 duration-300">
-                <div className="w-full mb-4">
-                  <label className="block text-sm font-bold text-gray-700 mb-1.5">E-mail Corporativo</label>
-                  <div className="relative group">
-                    <Mail className="absolute left-3 top-3 w-5 h-5 text-gray-400 group-focus-within:text-brand-500 transition-colors" />
-                    <input
-                      type="email"
-                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all"
-                      placeholder="seu@email.com"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                    />
-                  </div>
-                </div>
-
-                <div className="w-full mb-2">
-                  <label className="block text-sm font-bold text-gray-700 mb-1.5">Senha</label>
-                  <div className="relative group">
-                    <Lock className="absolute left-3 top-3 w-5 h-5 text-gray-400 group-focus-within:text-brand-500 transition-colors" />
-                    <input
-                      type="password"
-                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all"
-                      placeholder="••••••••"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                    />
-                  </div>
-                </div>
-
-                <div className="text-right">
-                  <button
-                    onClick={() => window.open('https://wa.me/5511999999999?text=Olá! Esqueci minha senha do Agende+. Meu email é: ' + encodeURIComponent(email), '_blank')}
-                    className="text-xs text-brand-600 font-bold hover:underline"
-                  >Esqueci minha senha</button>
-                </div>
-
-                <Button
-                  className="w-full flex justify-center items-center gap-2 py-4 text-lg font-bold shadow-lg shadow-brand-200 mt-6 rounded-xl hover:shadow-xl hover:-translate-y-0.5 transition-all"
-                  onClick={handleCompanyLogin}
-                >
-                  Entrar como Empresa
-                  <Store className="w-5 h-5" />
-                </Button>
-              </div>
-            ) : (
-              <div className="animate-in fade-in slide-in-from-left-4 duration-300">
-                <div className="w-full mb-4">
-                  <label className="block text-sm font-bold text-gray-700 mb-1.5">Seu Celular</label>
-                  <div className="relative group">
-                    <Phone className="absolute left-3 top-3 w-5 h-5 text-gray-400 group-focus-within:text-brand-500 transition-colors" />
-                    <input
-                      type="tel"
-                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all"
-                      placeholder="(DDD) 99999-9999"
-                      value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
-                    />
-                  </div>
-                  <p className="text-xs text-gray-400 mt-2">
-                    Usaremos seu número para localizar seus agendamentos e estabelecimentos favoritos.
-                  </p>
-                </div>
-
-                <Button
-                  className="w-full flex justify-center items-center gap-2 py-4 text-lg font-bold shadow-lg shadow-brand-200 mt-6 rounded-xl hover:shadow-xl hover:-translate-y-0.5 transition-all"
-                  onClick={handleClientLogin}
-                >
-                  Acessar Agendamentos
-                  <User className="w-5 h-5" />
-                </Button>
-              </div>
-            )}
-
-            {onRegister && activeTab === 'company' && (
-              <div className="mt-6 text-center pt-4 border-t border-gray-100">
-                <p className="text-sm text-gray-500">
-                  Ainda não é parceiro?{' '}
-                  <button onClick={onRegister} className="font-bold text-brand-600 hover:text-brand-800 transition-colors">
-                    Cadastre sua empresa
-                  </button>
-                </p>
-              </div>
-            )}
-          </div>
-        </Card>
-
-        {/* App Store / Google Play Buttons (Simulation) */}
-        <div className="mt-4 flex flex-col items-center gap-3 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300">
-          <p className="text-gray-400 text-xs font-semibold uppercase tracking-wider">Baixe nosso App</p>
-          <div className="flex gap-3">
-            <button
-              onClick={() => alert("Para instalar no iOS:\n\n1. Toque no botão Compartilhar (quadrado com seta)\n2. Role para baixo e selecione 'Adicionar à Tela de Início'")}
-              className="bg-black text-white px-4 py-3 rounded-lg flex items-center gap-2 hover:opacity-80 transition-opacity"
-            >
-              <div className="text-left leading-none">
-                <div className="text-[10px] uppercase text-gray-400">Versão Mobile</div>
-                <div className="text-sm font-bold font-sans">INSTALE NO IOS</div>
-              </div>
-            </button>
-            <button
-              onClick={() => {
-                if (isInstallable) {
-                  showPrompt();
-                } else {
-                  alert("Para instalar no Android:\n\n1. Toque nos três pontinhos do navegador\n2. Selecione 'Instalar aplicativo' ou 'Adicionar à tela inicial'");
-                }
-              }}
-              className="bg-black text-white px-4 py-3 rounded-lg flex items-center gap-2 hover:opacity-80 transition-opacity"
-            >
-              <div className="text-left leading-none">
-                <div className="text-[10px] uppercase text-gray-400">Versão Mobile</div>
-                <div className="text-sm font-bold font-sans">INSTALE NO ANDROID</div>
-              </div>
-            </button>
-          </div>
+        {/* Tabs */}
+        <div className="flex bg-gray-100 p-1 rounded-lg mb-6">
+          <button
+            className={`flex-1 py-2 text-sm font-bold rounded-md transition-all ${activeTab === 'company' ? 'bg-white text-brand-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+            onClick={() => setActiveTab('company')}
+          >
+            Empresa
+          </button>
+          <button
+            className={`flex-1 py-2 text-sm font-bold rounded-md transition-all ${activeTab === 'client' ? 'bg-white text-brand-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+            onClick={() => setActiveTab('client')}
+          >
+            Cliente
+          </button>
         </div>
 
-      </div >
-    </div >
+        <div className="space-y-6">
+
+          {activeTab === 'company' ? (
+            <div className="animate-in fade-in slide-in-from-right-4 duration-300">
+              <div className="w-full mb-4">
+                <label className="block text-sm font-bold text-gray-700 mb-1.5">E-mail Corporativo</label>
+                <div className="relative group">
+                  <Mail className="absolute left-3 top-3 w-5 h-5 text-gray-400 group-focus-within:text-brand-500 transition-colors" />
+                  <input
+                    type="email"
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all"
+                    placeholder="seu@email.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="w-full mb-2">
+                <label className="block text-sm font-bold text-gray-700 mb-1.5">Senha</label>
+                <div className="relative group">
+                  <Lock className="absolute left-3 top-3 w-5 h-5 text-gray-400 group-focus-within:text-brand-500 transition-colors" />
+                  <input
+                    type="password"
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all"
+                    placeholder="••••••••"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="text-right">
+                <button
+                  onClick={() => window.open('https://wa.me/5511999999999?text=Olá! Esqueci minha senha do Agende+. Meu email é: ' + encodeURIComponent(email), '_blank')}
+                  className="text-xs text-brand-600 font-bold hover:underline"
+                >Esqueci minha senha</button>
+              </div>
+
+              <Button
+                className="w-full flex justify-center items-center gap-2 py-4 text-lg font-bold shadow-lg shadow-brand-200 mt-6 rounded-xl hover:shadow-xl hover:-translate-y-0.5 transition-all"
+                onClick={handleCompanyLogin}
+              >
+                Entrar como Empresa
+                <Store className="w-5 h-5" />
+              </Button>
+            </div>
+          ) : (
+            <div className="animate-in fade-in slide-in-from-left-4 duration-300">
+              <div className="w-full mb-4">
+                <label className="block text-sm font-bold text-gray-700 mb-1.5">Seu Celular</label>
+                <div className="relative group">
+                  <Phone className="absolute left-3 top-3 w-5 h-5 text-gray-400 group-focus-within:text-brand-500 transition-colors" />
+                  <input
+                    type="tel"
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all"
+                    placeholder="(DDD) 99999-9999"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                  />
+                </div>
+                <p className="text-xs text-gray-400 mt-2">
+                  Usaremos seu número para localizar seus agendamentos e estabelecimentos favoritos.
+                </p>
+              </div>
+
+              <Button
+                className="w-full flex justify-center items-center gap-2 py-4 text-lg font-bold shadow-lg shadow-brand-200 mt-6 rounded-xl hover:shadow-xl hover:-translate-y-0.5 transition-all"
+                onClick={handleClientLogin}
+              >
+                Acessar Agendamentos
+                <User className="w-5 h-5" />
+              </Button>
+            </div>
+          )}
+
+          {onRegister && activeTab === 'company' && (
+            <div className="mt-6 text-center pt-4 border-t border-gray-100">
+              <p className="text-sm text-gray-500">
+                Ainda não é parceiro?{' '}
+                <button onClick={onRegister} className="font-bold text-brand-600 hover:text-brand-800 transition-colors">
+                  Cadastre sua empresa
+                </button>
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
   );
 };
