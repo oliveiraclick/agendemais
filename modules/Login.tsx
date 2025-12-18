@@ -14,7 +14,7 @@ export const Login: React.FC<{
   onForgotPassword?: () => void;
   prefilledEmail?: string;
 }> = ({ onCompanyLogin, onClientLogin, onProfessionalLogin, onRegister, onForgotPassword, prefilledEmail }) => {
-  const { salons, refreshSalons } = useStore();
+  const { salons, refreshSalons, createSalon } = useStore();
   const { signIn } = useAuth();
 
   const [activeTab, setActiveTab] = useState<'company' | 'client'>('company');
@@ -62,8 +62,42 @@ export const Login: React.FC<{
           }
         }
 
-        // No salon found for this user
-        alert('Nenhuma conta encontrada para este usuário. Entre em contato com o suporte.');
+        // No salon found? AUTO-CREATE (Self-Healing)
+        // This handles cases where the DB trigger failed or RLS hid the record.
+        console.log('Salon not found. Attempting auto-creation fallback...');
+
+        try {
+          const meta = session.user.user_metadata || {};
+          const fallbackName = meta.salonName || 'Meu Salão';
+          const fallbackOwner = meta.ownerName || 'Admin';
+          const fallbackPhone = meta.phone || '';
+
+          // Create locally and in DB
+          await createSalon(
+            fallbackName,
+            'professional',
+            'Endereço não informado', // Address
+            fallbackOwner,
+            cleanEmail,
+            '123456', // Default password (internal use)
+            undefined,
+            session.user.id // Link to Auth ID
+          );
+
+          // Refresh to get the new ID
+          const updatedSalons = await refreshSalons();
+          const newSalon = updatedSalons?.find(s => s.user_id === session.user.id);
+
+          if (newSalon) {
+            onCompanyLogin(newSalon.id);
+            return;
+          }
+        } catch (err) {
+          console.error('Auto-creation failed:', err);
+        }
+
+        // Only alert if auto-creation also failed
+        alert('Erro ao recuperar dados da conta. Por favor, contate o suporte.');
         return;
       }
 
