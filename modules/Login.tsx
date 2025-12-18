@@ -1,10 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useStore } from '../store';
-<<<<<<< HEAD
 import { useAuth } from '../hooks/useAuth';
-=======
->>>>>>> ed746be00dd1dc17706d7be2e58310eac5a733f8
 import { Button, AgendeLogo } from '../components/UI';
 import { Mail, Lock, Phone, Store, User, ChevronRight, Eye, EyeOff } from 'lucide-react';
 import { ContextualHelp } from '../components/ContextualHelp';
@@ -14,17 +11,11 @@ export const Login: React.FC<{
   onClientLogin?: (phone: string) => void;
   onProfessionalLogin?: (salonId: string, professionalId: string) => void;
   onRegister?: () => void;
-<<<<<<< HEAD
   onForgotPassword?: () => void;
   prefilledEmail?: string;
 }> = ({ onCompanyLogin, onClientLogin, onProfessionalLogin, onRegister, onForgotPassword, prefilledEmail }) => {
   const { salons } = useStore();
   const { signIn } = useAuth();
-=======
-  prefilledEmail?: string;
-}> = ({ onCompanyLogin, onClientLogin, onProfessionalLogin, onRegister, prefilledEmail }) => {
-  const { salons } = useStore();
->>>>>>> ed746be00dd1dc17706d7be2e58310eac5a733f8
 
   const [activeTab, setActiveTab] = useState<'company' | 'client'>('company');
   const [email, setEmail] = useState('');
@@ -36,23 +27,16 @@ export const Login: React.FC<{
     if (prefilledEmail) setEmail(prefilledEmail);
   }, [prefilledEmail]);
 
-<<<<<<< HEAD
   const handleCompanyLogin = async () => {
     const cleanEmail = email.trim();
     const cleanPassword = password.trim();
 
     // Admin login (keep for backward compatibility)
     if (cleanEmail === 'adm@agendemais.app' && cleanPassword === 'agendemais@1112') {
-=======
-  const handleCompanyLogin = () => {
-    // Admin login
-    if (email === 'adm@agendemais.app' && password === 'agendemais@1112') {
->>>>>>> ed746be00dd1dc17706d7be2e58310eac5a733f8
       onCompanyLogin('admin');
       return;
     }
 
-<<<<<<< HEAD
     try {
       // Supabase Auth login
       const { session } = await signIn(cleanEmail, cleanPassword);
@@ -93,25 +77,6 @@ export const Login: React.FC<{
 
       alert(errorMessage);
     }
-=======
-    // Check salon login
-    const salon = salons.find(s => s.ownerEmail === email && s.password === password);
-    if (salon) {
-      onCompanyLogin(salon.id);
-      return;
-    }
-
-    // Check professional login
-    for (const salon of salons) {
-      const professional = salon.professionals?.find(p => p.email === email && p.password === password);
-      if (professional && onProfessionalLogin) {
-        onProfessionalLogin(salon.id, professional.id);
-        return;
-      }
-    }
-
-    alert('E-mail ou senha incorretos.');
->>>>>>> ed746be00dd1dc17706d7be2e58310eac5a733f8
   };
 
   const handleClientLogin = () => {
@@ -199,7 +164,6 @@ export const Login: React.FC<{
                 </button>
               </div>
             </div>
-<<<<<<< HEAD
 
             {/* Esqueci senha */}
             {onForgotPassword && (
@@ -211,17 +175,6 @@ export const Login: React.FC<{
               </button>
             )}
 
-=======
-
-            {/* Esqueci senha */}
-            <button
-              onClick={() => window.open('https://wa.me/5511999999999?text=Olá! Esqueci minha senha do Agende+. Meu email é: ' + encodeURIComponent(email), '_blank')}
-              className="text-sm text-brand-600 font-medium"
-            >
-              Esqueci minha senha
-            </button>
-
->>>>>>> ed746be00dd1dc17706d7be2e58310eac5a733f8
             {/* Botão entrar */}
             <Button
               className="w-full py-4 text-base font-bold rounded-2xl shadow-lg shadow-brand-200 flex items-center justify-center gap-2 mt-4"
