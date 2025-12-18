@@ -63,17 +63,15 @@ export const Login: React.FC<{
         }
 
         // No salon found? AUTO-CREATE (Self-Healing)
-        // This handles cases where the DB trigger failed or RLS hid the record.
         console.log('Salon not found. Attempting auto-creation fallback...');
 
         try {
           const meta = session.user.user_metadata || {};
           const fallbackName = meta.salonName || 'Meu Salão';
           const fallbackOwner = meta.ownerName || 'Admin';
-          const fallbackPhone = meta.phone || '';
 
-          // Create locally and in DB
-          await createSalon(
+          // Create in DB (will throw if fails, unless duplicate)
+          const createdSalon = await createSalon(
             fallbackName,
             'professional',
             'Endereço não informado', // Address
@@ -84,21 +82,31 @@ export const Login: React.FC<{
             session.user.id // Link to Auth ID
           );
 
-          // Refresh to get the new ID
+          // If we got here, it means DB insert worked OR it was a duplicate (handled in store)
+          // So we can trust 'createdSalon' or fetch again.
+
           const updatedSalons = await refreshSalons();
-          const newSalon = updatedSalons?.find(s => s.user_id === session.user.id);
+          let newSalon = updatedSalons?.find(s => s.user_id === session.user.id);
+
+          if (!newSalon && createdSalon) {
+            // If refresh didn't find it but create returned it (e.g. duplicate handling), use it.
+            newSalon = createdSalon;
+          }
 
           if (newSalon) {
             onCompanyLogin(newSalon.id);
             return;
+          } else {
+            alert('Conta criada, mas houve um erro ao carregar. Tente fazer login novamente.');
+            return;
           }
-        } catch (err) {
+        } catch (err: any) {
           console.error('Auto-creation failed:', err);
+          // If it failed, it means DB is unreachable or RLS blocked INSERT.
+          // We must NOT let them in locally if they want cross-device access.
+          alert(`Erro ao criar conta no servidor: ${err.message}. Tente novamente ou contate o suporte.`);
+          return;
         }
-
-        // Only alert if auto-creation also failed
-        alert('Erro ao recuperar dados da conta. Por favor, contate o suporte.');
-        return;
       }
 
       alert('E-mail ou senha incorretos.');

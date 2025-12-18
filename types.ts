@@ -176,19 +176,6 @@ export interface StoreContextType {
   clients: Client[];
   saasRevenueGoal: number; // For SaaS Dashboard
   trialDays: number; // Configurable trial days
-  currentSalonId: string | null;
-  setCurrentSalonId: (id: string | null) => void;
-  setTrialDays: (days: number) => void;
-  updateSalon: (salon: Salon) => void;
-  addAppointment: (salonId: string, appointment: Appointment) => void;
-  cancelAppointment: (salonId: string, appointmentId: string) => void; // New Action
-  createSalon: (name: string, plan: PlanType, address: string, ownerName?: string, email?: string, password?: string, couponCode?: string) => void;
-  addBlockedPeriod: (salonId: string, blockedPeriod: BlockedPeriod) => void;
-  saveClient: (client: Client) => void;
-  getClientByPhone: (phone: string) => Client | undefined;
-  // Financials
-  addTransaction: (salonId: string, transaction: Transaction) => void;
-  // Inventory
   addProduct: (salonId: string, product: Product) => void;
   updateProduct: (salonId: string, productId: string, quantity: number) => void;
   // SaaS Admin Actions

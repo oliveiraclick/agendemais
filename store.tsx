@@ -210,6 +210,23 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
             }]).select();
 
             if (error) {
+                // Handle "Duplicate key" error (Postgres code 23505)
+                if (error.code === '23505') {
+                    console.log('⚠️ Salon já existe no Supabase (Duplicate Key). Recuperando...');
+                    // If it exists, we try to fetch it again to return the object
+                    const { data: existingData } = await supabase
+                        .from('salons')
+                        .select('*')
+                        .eq('user_id', userId || '')
+                        .single();
+
+                    if (existingData) {
+                        // Map to our internal structure if needed, or just return basic
+                        // For now, we return what we have. The refreshSalons will get the full tree.
+                        return existingData as any;
+                    }
+                }
+
                 console.error('❌ Erro ao salvar salon no Supabase:', error);
                 throw new Error(`Falha ao criar salon: ${error.message}`);
             } else {
@@ -218,6 +235,8 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         } else {
             console.warn('⚠️ Supabase não disponível - salvando apenas localmente');
         }
+
+        return newSalon;
     };
 
     const addAppointment = async (salonId: string, appointment: Appointment) => {
