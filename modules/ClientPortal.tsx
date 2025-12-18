@@ -315,15 +315,16 @@ export const ClientPortal: React.FC<{
         <AppShell
             header={
                 viewMode === 'list' ? (
-                    <div className="px-4 py-4 bg-white border-b border-gray-100">
-                        <div className="font-bold text-lg text-brand-600">Agende +</div>
+                    <div className="px-4 py-4 bg-gradient-to-r from-brand-600 to-brand-700">
+                        <div className="font-bold text-lg text-white">Agende +</div>
+                        <div className="text-xs text-white/70">Seus favoritos</div>
                     </div>
                 ) : (
-                    <div className="px-4 py-3 bg-white flex items-center gap-3 border-b border-gray-100 shadow-sm">
-                        <button onClick={handleBackToFavorites} className="p-1 -ml-1 text-gray-600 rounded-full hover:bg-gray-100">
+                    <div className="px-4 py-4 bg-gradient-to-r from-brand-600 to-brand-700 flex items-center gap-3">
+                        <button onClick={handleBackToFavorites} className="p-1.5 -ml-1 text-white/80 rounded-full hover:bg-white/10">
                             <ChevronLeft className="w-6 h-6" />
                         </button>
-                        <div className="font-bold text-gray-900 truncate">
+                        <div className="font-bold text-white truncate">
                             {currentSalon?.name}
                         </div>
                     </div>

@@ -1324,20 +1324,22 @@ export const TenantAdmin: React.FC<{ salonId: string; onBack: () => void; onHelp
     };
 
     const Header = (
-        <div className="px-4 py-3 flex items-center gap-3 bg-white">
-            <div className="w-10 h-10 bg-brand-100 rounded-full overflow-hidden flex-shrink-0">
-                {salon.coverImage ? (
-                    <img src={salon.coverImage} className="w-full h-full object-cover" />
-                ) : (
-                    <div className="w-full h-full flex items-center justify-center text-brand-600 font-bold">{salon.name[0]}</div>
-                )}
-            </div>
-            <div>
-                <h1 className="font-bold text-gray-900 leading-tight">{salon.name}</h1>
-                <p className="text-xs text-gray-500 uppercase font-semibold">{activeTab}</p>
-            </div>
-            <div className="ml-auto">
-                {saveStatus && <span className="text-xs font-bold text-green-600 animate-pulse">{saveStatus}</span>}
+        <div className="px-4 py-4 bg-gradient-to-r from-brand-600 to-brand-700">
+            <div className="flex items-center gap-3">
+                <div className="w-12 h-12 bg-white rounded-xl overflow-hidden flex-shrink-0 shadow-lg">
+                    {salon.coverImage ? (
+                        <img src={salon.coverImage} className="w-full h-full object-cover" />
+                    ) : (
+                        <div className="w-full h-full flex items-center justify-center text-brand-600 font-bold text-xl">{salon.name[0]}</div>
+                    )}
+                </div>
+                <div className="flex-1">
+                    <h1 className="font-bold text-white leading-tight">{salon.name}</h1>
+                    <p className="text-xs text-white/70 uppercase font-semibold">{activeTab}</p>
+                </div>
+                <div>
+                    {saveStatus && <span className="text-xs font-bold text-white bg-white/20 px-2 py-1 rounded-full">{saveStatus}</span>}
+                </div>
             </div>
         </div>
     );

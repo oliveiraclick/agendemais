@@ -37,13 +37,18 @@ export const SuperAdmin: React.FC<{
     }).length;
 
     const Header = (
-        <div className="px-4 py-3 bg-gray-900 text-white flex justify-between items-center shadow-md">
-            <div className="font-bold flex items-center gap-2">
-                <DollarSign className="w-5 h-5 text-green-400" /> Admin Financeiro
+        <div className="px-4 py-4 bg-gradient-to-r from-gray-800 to-gray-900">
+            <div className="flex justify-between items-center">
+                <div className="font-bold flex items-center gap-2 text-white">
+                    <div className="bg-green-500 p-2 rounded-xl">
+                        <DollarSign className="w-5 h-5 text-white" />
+                    </div>
+                    Admin Financeiro
+                </div>
+                <button onClick={onLogout} className="text-white/70 hover:text-white text-xs font-medium flex items-center gap-1 bg-white/10 px-3 py-1.5 rounded-full">
+                    <LogOut className="w-3 h-3" /> Sair
+                </button>
             </div>
-            <button onClick={onLogout} className="text-xs text-gray-300 hover:text-white font-medium flex items-center gap-1">
-                <LogOut className="w-3 h-3" /> Sair
-            </button>
         </div>
     );
 
