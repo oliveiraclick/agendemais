@@ -892,8 +892,21 @@ export const TenantAdmin: React.FC<{ salonId: string; onBack: () => void; onHelp
                                                 </div>
                                             )}
                                             <div className="mt-2 flex gap-2">
-                                                <button className="text-xs bg-gray-100 px-2 py-1 rounded hover:bg-gray-200 transition-colors">+ Entrada</button>
-                                                <button className="text-xs bg-gray-100 px-2 py-1 rounded hover:bg-gray-200 transition-colors">- Saída</button>
+                                                <button
+                                                    onClick={() => {
+                                                        const qty = parseInt(prompt('Quantidade de entrada:') || '0', 10);
+                                                        if (qty > 0) updateProduct(salon.id, prod.id, prod.quantity + qty);
+                                                    }}
+                                                    className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded hover:bg-green-200 transition-colors font-medium"
+                                                >+ Entrada</button>
+                                                <button
+                                                    onClick={() => {
+                                                        const qty = parseInt(prompt('Quantidade de saída:') || '0', 10);
+                                                        if (qty > 0 && prod.quantity >= qty) updateProduct(salon.id, prod.id, prod.quantity - qty);
+                                                        else if (qty > prod.quantity) alert('Quantidade maior que estoque disponível!');
+                                                    }}
+                                                    className="text-xs bg-red-100 text-red-700 px-2 py-1 rounded hover:bg-red-200 transition-colors font-medium"
+                                                >- Saída</button>
                                             </div>
                                         </div>
                                     </div>

@@ -70,9 +70,14 @@ export const PublicBooking: React.FC<{
             const existingClient = getClientByPhone(portalClientPhone);
             if (existingClient) {
                 setClientName(existingClient.name);
-                setClientBirthDate(existingClient.birthDate);
+                setClientBirthDate(existingClient.birthDate || '');
                 setClientVerified(true);
                 setIsNewClient(false);
+            } else {
+                // Cliente não encontrado no banco - permitir agendamento com dados mínimos
+                setClientName(''); // Será pedido ou usará telefone
+                setClientVerified(true); // Permitir continuar
+                setIsNewClient(true);
             }
         }
     }, [professionalId, salon, fromPortal, portalClientPhone]);
@@ -223,12 +228,16 @@ export const PublicBooking: React.FC<{
     }, [clientPhone, isEditingData]);
 
     const handleBooking = () => {
-        if (selectedService && selectedProfessional && selectedDate && selectedTime && clientName && clientPhone) {
-            if (isNewClient || isEditingData) {
+        // Validação mais flexível para portal users
+        const finalClientName = clientName || (fromPortal ? `Cliente ${clientPhone.slice(-4)}` : '');
+        const finalClientPhone = clientPhone || portalClientPhone || '';
+
+        if (selectedService && selectedProfessional && selectedDate && selectedTime && finalClientPhone) {
+            if ((isNewClient || isEditingData) && clientName) {
                 saveClient({
                     id: Math.random().toString(36).substr(2, 9),
                     name: clientName,
-                    phone: clientPhone,
+                    phone: finalClientPhone,
                     birthDate: clientBirthDate
                 });
             }
@@ -238,8 +247,8 @@ export const PublicBooking: React.FC<{
                 salonId: salon.id,
                 serviceId: selectedService.id,
                 professionalId: selectedProfessional.id,
-                clientName: clientName,
-                clientPhone: clientPhone,
+                clientName: finalClientName,
+                clientPhone: finalClientPhone,
                 date: finalDate,
                 status: 'scheduled',
                 price: selectedService.price,
@@ -249,6 +258,10 @@ export const PublicBooking: React.FC<{
             // Ensure we move to step 4
             setStep(4);
             window.scrollTo(0, 0);
+        } else {
+            // Debug: mostrar o que está faltando
+            console.log('Missing:', { selectedService, selectedProfessional, selectedDate, selectedTime, finalClientName, finalClientPhone });
+            if (!finalClientPhone) alert('Por favor, informe seu telefone.');
         }
     };
 

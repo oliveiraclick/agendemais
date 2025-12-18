@@ -222,7 +222,10 @@ export const Login: React.FC<{
                 </div>
 
                 <div className="text-right">
-                  <button className="text-xs text-brand-600 font-bold hover:underline">Esqueci minha senha</button>
+                  <button
+                    onClick={() => window.open('https://wa.me/5511999999999?text=Olá! Esqueci minha senha do Agende+. Meu email é: ' + encodeURIComponent(email), '_blank')}
+                    className="text-xs text-brand-600 font-bold hover:underline"
+                  >Esqueci minha senha</button>
                 </div>
 
                 <Button
