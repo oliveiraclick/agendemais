@@ -24,7 +24,7 @@ export const Login: React.FC<{
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [phone, setPhone] = useState('11999990000');
+  const [phone, setPhone] = useState('');
 
   useEffect(() => {
     if (prefilledEmail) setEmail(prefilledEmail);
@@ -306,7 +306,7 @@ export const Login: React.FC<{
         </div>
 
         {/* Versão discreta */}
-        <div className="text-center text-[10px] text-gray-300 mt-4">v1.0.5</div>
+        <div className="text-center text-[10px] text-gray-300 mt-4">v1.0.6</div>
       </div >
     </div >
   );
