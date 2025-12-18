@@ -38,6 +38,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
     const [currentSalonId, setCurrentSalonId] = useState<string | null>(null);
     const saasRevenueGoal = 5000;
+    const [trialDays, setTrialDays] = useState<number>(30);
     const [isLoading, setIsLoading] = useState(true);
 
     // --- SUPABASE DATA FETCHING ---
@@ -406,8 +407,8 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
     return (
         <StoreContext.Provider value={{
-            salons, saasPlans, coupons, clients, saasRevenueGoal, currentSalonId,
-            setCurrentSalonId, updateSalon, addAppointment, createSalon,
+            salons, saasPlans, coupons, clients, saasRevenueGoal, trialDays, currentSalonId,
+            setCurrentSalonId, setTrialDays, updateSalon, addAppointment, createSalon,
             addBlockedPeriod, saveClient, getClientByPhone, cancelAppointment,
             addTransaction, updateSaaSPlan, addSaaSPlan, deleteSaaSPlan, createCoupon, toggleSalonStatus, exemptSalon,
             addProduct, updateProduct, addReview

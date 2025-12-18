@@ -170,8 +170,10 @@ export interface StoreContextType {
   coupons: Coupon[];
   clients: Client[];
   saasRevenueGoal: number; // For SaaS Dashboard
+  trialDays: number; // Configurable trial days
   currentSalonId: string | null;
   setCurrentSalonId: (id: string | null) => void;
+  setTrialDays: (days: number) => void;
   updateSalon: (salon: Salon) => void;
   addAppointment: (salonId: string, appointment: Appointment) => void;
   cancelAppointment: (salonId: string, appointmentId: string) => void; // New Action

@@ -2,14 +2,14 @@
 import React, { useState } from 'react';
 import { useStore } from '../store';
 import { Button, Card, Input, Badge, AppShell, MobileNav, MobileNavItem } from '../components/UI';
-import { LayoutDashboard, Users, Plus, LogOut, Tags, DollarSign, Pen, Ban, CheckCircle, TrendingUp, Target, PartyPopper, Gift } from 'lucide-react';
+import { LayoutDashboard, Users, Plus, LogOut, Tags, DollarSign, Pen, Ban, CheckCircle, TrendingUp, Target, PartyPopper, Gift, Clock } from 'lucide-react';
 import { Salon, SaaSPlan } from '../types';
 
 export const SuperAdmin: React.FC<{
     onNavigate: (view: 'tenant' | 'public', salonId: string) => void,
     onLogout: () => void
 }> = ({ onNavigate, onLogout }) => {
-    const { salons, saasPlans, coupons, saasRevenueGoal, createSalon, updateSaaSPlan, addSaaSPlan, deleteSaaSPlan, createCoupon, toggleSalonStatus, exemptSalon } = useStore();
+    const { salons, saasPlans, coupons, saasRevenueGoal, trialDays, createSalon, updateSaaSPlan, addSaaSPlan, deleteSaaSPlan, createCoupon, toggleSalonStatus, exemptSalon, setTrialDays } = useStore();
     const [activeTab, setActiveTab] = useState<'dashboard' | 'clients' | 'plans' | 'coupons'>('dashboard');
 
     // Local states for forms
@@ -128,6 +128,24 @@ export const SuperAdmin: React.FC<{
                                         <span className="text-xs font-bold">{lateSalons}</span>
                                     </div>
                                 </div>
+                            </div>
+                        </Card>
+
+                        {/* Config Trial Days */}
+                        <Card className="p-4 bg-blue-50 border-blue-100">
+                            <h3 className="font-bold text-blue-900 mb-3 flex items-center gap-2 text-sm">
+                                <Clock className="w-4 h-4" /> Período de Teste
+                            </h3>
+                            <div className="flex items-center gap-3">
+                                <input
+                                    type="number"
+                                    className="w-20 px-3 py-2 bg-white border border-blue-200 rounded-lg text-center font-bold text-xl text-blue-600 focus:ring-2 focus:ring-blue-400 outline-none"
+                                    value={trialDays}
+                                    onChange={(e) => setTrialDays(parseInt(e.target.value) || 30)}
+                                    min={1}
+                                    max={90}
+                                />
+                                <span className="text-sm text-blue-700">dias de teste grátis para novos clientes</span>
                             </div>
                         </Card>
                     </div>
