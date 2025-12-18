@@ -183,7 +183,9 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
                 plan: newSalon.plan,
                 address: newSalon.address,
                 monthly_fee: newSalon.monthlyFee,
-                subscription_status: 'trial'
+                subscription_status: 'trial',
+                owner_email: newSalon.ownerEmail,
+                password: newSalon.password
             }]);
         }
     };
