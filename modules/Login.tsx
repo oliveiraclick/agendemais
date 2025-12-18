@@ -93,8 +93,8 @@ export const Login: React.FC<{
 
   if (showPaymentLock) {
     return (
-      <div className="h-full overflow-y-auto bg-gray-50 flex flex-col justify-center py-6 sm:px-6 lg:px-8">
-        <div className="sm:mx-auto sm:w-full sm:max-w-md my-auto">
+      <div className="h-full overflow-y-auto bg-gray-50 flex flex-col justify-center py-4 px-4">
+        <div className="mx-auto w-full max-w-sm">
           <div className="flex justify-center mb-6">
             <div className="animate-in zoom-in duration-500 bg-red-100 p-4 rounded-full">
               <Lock className="w-16 h-16 text-red-600" />
@@ -306,7 +306,7 @@ export const Login: React.FC<{
         </div>
 
         {/* Versão discreta */}
-        <div className="text-center text-[10px] text-gray-300 mt-4">v1.0.7</div>
+        <div className="text-center text-[10px] text-gray-300 mt-4">v1.0.8</div>
       </div >
     </div >
   );

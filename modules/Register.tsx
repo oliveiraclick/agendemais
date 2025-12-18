@@ -52,8 +52,8 @@ export const Register: React.FC<{
 
     if (isRegistered) {
         return (
-            <div className="h-full overflow-y-auto bg-gray-50 flex flex-col justify-center py-6 sm:px-6 lg:px-8">
-                <div className="sm:mx-auto sm:w-full sm:max-w-md my-auto">
+            <div className="h-full overflow-y-auto bg-gray-50 flex flex-col justify-center py-4 px-4">
+                <div className="mx-auto w-full max-w-sm">
                     <div className="flex justify-center mb-6">
                         <div className="animate-in zoom-in duration-500 bg-green-100 p-4 rounded-full">
                             <CalendarCheck className="w-16 h-16 text-green-600" />
@@ -67,7 +67,7 @@ export const Register: React.FC<{
                         Sua conta foi registrada com sucesso. Para começar a usar, realize o pagamento da taxa de adesão.
                     </p>
 
-                    <div className="mt-4 bg-white py-8 px-4 shadow-xl shadow-gray-200/50 sm:rounded-2xl sm:px-10 border border-gray-100 text-center space-y-4">
+                    <div className="mt-4 bg-white py-6 px-4 shadow-xl shadow-gray-200/50 rounded-2xl border border-gray-100 text-center space-y-4">
 
                         <Button
                             className="w-full py-4 text-lg font-bold bg-green-600 hover:bg-green-700 text-white rounded-xl shadow-lg shadow-green-200 flex items-center justify-center gap-2 animate-pulse"
