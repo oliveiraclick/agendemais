@@ -108,8 +108,12 @@ const AppContent: React.FC = () => {
           }}
           onBack={goRegister}
           onRegister={goRegister}
+<<<<<<< HEAD
           onForgotPassword={() => setView({ type: 'forgot-password' })}
           prefilledEmail={view.type === 'login' ? view.prefilledEmail : undefined}
+=======
+          onHelp={() => setView({ type: 'help-center' })}
+>>>>>>> ed746be00dd1dc17706d7be2e58310eac5a733f8
         />
       );
     case 'forgot-password':
