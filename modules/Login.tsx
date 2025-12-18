@@ -146,10 +146,10 @@ export const Login: React.FC<{
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-6 sm:px-6 lg:px-8 relative">
+    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-4 px-4 sm:px-6 lg:px-8 relative">
 
       {/* Header / Logo Section */}
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
+      <div className="mx-auto w-full max-w-sm">
         <div className="flex justify-center flex-col items-center mb-4">
           <div className="mb-2 animate-in zoom-in duration-500">
             <AgendeLogo className="w-32 h-auto" />
@@ -166,8 +166,8 @@ export const Login: React.FC<{
         </div>
       </div>
 
-      <div className="mt-2 sm:mx-auto sm:w-full sm:max-w-md">
-        <Card className="py-8 px-4 shadow-2xl shadow-gray-200/50 border-0 sm:rounded-2xl sm:px-10 overflow-hidden">
+      <div className="mt-2 mx-auto w-full max-w-sm">
+        <Card className="py-6 px-4 shadow-xl shadow-gray-200/50 border-0 rounded-2xl overflow-hidden">
 
           {/* Tabs */}
           <div className="flex bg-gray-100 p-1 rounded-lg mb-6">
@@ -306,7 +306,7 @@ export const Login: React.FC<{
         </div>
 
         {/* Versão discreta */}
-        <div className="text-center text-[10px] text-gray-300 mt-4">v1.0.6</div>
+        <div className="text-center text-[10px] text-gray-300 mt-4">v1.0.7</div>
       </div >
     </div >
   );

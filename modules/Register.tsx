@@ -93,10 +93,10 @@ export const Register: React.FC<{
     }
 
     return (
-        <div className="h-full overflow-y-auto bg-gray-50 flex flex-col justify-center py-6 sm:px-6 lg:px-8">
+        <div className="h-full overflow-y-auto bg-gray-50 flex flex-col justify-center py-4 px-4 sm:px-6 lg:px-8">
 
             {/* Header */}
-            <div className="sm:mx-auto sm:w-full sm:max-w-md my-auto">
+            <div className="mx-auto w-full max-w-sm">
                 <div className="flex justify-center mb-2">
                     <div className="animate-in zoom-in duration-500">
                         <AgendeLogo className="w-32 h-auto" />
@@ -110,7 +110,7 @@ export const Register: React.FC<{
                     Já tem uma conta? <button onClick={onLoginRedirect} className="font-bold text-brand-600 hover:text-brand-800 transition-colors">Fazer Login</button>
                 </p>
 
-                <div className="mt-4 bg-white py-6 px-4 shadow-xl shadow-gray-200/50 sm:rounded-2xl sm:px-10 border border-gray-100">
+                <div className="mt-3 bg-white py-5 px-4 shadow-xl shadow-gray-200/50 rounded-2xl border border-gray-100">
                     <div className="space-y-3">
                         <div className="grid grid-cols-2 gap-3">
                             <div>
