@@ -19,7 +19,7 @@ export default defineConfig(({ mode }) => {
         manifest: {
           id: '/',
           name: 'Agende +',
-          short_name: 'Agende +',
+          short_name: 'Agende+',
           description: 'Gestão Inteligente para Profissionais - Agende seus serviços de forma rápida e eficiente',
           theme_color: '#e11d48',
           background_color: '#ffffff',
@@ -28,7 +28,32 @@ export default defineConfig(({ mode }) => {
           scope: '/',
           start_url: '/',
           categories: ['business', 'productivity'],
+          prefer_related_applications: false,
           icons: [
+            {
+              src: 'icon-48.png',
+              sizes: '48x48',
+              type: 'image/png',
+              purpose: 'any'
+            },
+            {
+              src: 'icon-72.png',
+              sizes: '72x72',
+              type: 'image/png',
+              purpose: 'any'
+            },
+            {
+              src: 'icon-96.png',
+              sizes: '96x96',
+              type: 'image/png',
+              purpose: 'any'
+            },
+            {
+              src: 'icon-144.png',
+              sizes: '144x144',
+              type: 'image/png',
+              purpose: 'any'
+            },
             {
               src: 'icon-192.png',
               sizes: '192x192',
@@ -62,6 +87,13 @@ export default defineConfig(({ mode }) => {
               type: 'image/png',
               form_factor: 'narrow',
               label: 'Agendamento de serviços'
+            },
+            {
+              src: 'screenshot-wide.png',
+              sizes: '1920x1080',
+              type: 'image/png',
+              form_factor: 'wide',
+              label: 'Dashboard administrativo'
             }
           ]
         }
