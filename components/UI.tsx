@@ -52,10 +52,13 @@ export const Badge: React.FC<{ children: React.ReactNode; color?: 'green' | 'blu
   );
 };
 
+import { createPortal } from 'react-dom';
+
 export const Modal: React.FC<{ isOpen: boolean; onClose: () => void; title: string; children: React.ReactNode }> = ({ isOpen, onClose, title, children }) => {
   if (!isOpen) return null;
-  return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
+
+  return createPortal(
+    <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center sm:p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
       {/* Mobile: Bottom Sheet | Desktop: Modal */}
       <div className="bg-white w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl shadow-2xl animate-in slide-in-from-bottom duration-300 sm:zoom-in-95 overflow-hidden max-h-[90vh] flex flex-col">
         <div className="flex justify-between items-center px-6 py-4 border-b border-gray-100">
@@ -68,7 +71,8 @@ export const Modal: React.FC<{ isOpen: boolean; onClose: () => void; title: stri
           {children}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 
@@ -80,16 +84,49 @@ export const ImageUpload: React.FC<{
 }> = ({ className, currentImage, placeholder, onImageUpload }) => {
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const compressImage = (file: File, maxWidth: number = 800, quality: number = 0.8): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+
+          // Redimensionar se maior que maxWidth
+          if (width > maxWidth) {
+            height = (height * maxWidth) / width;
+            width = maxWidth;
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx?.drawImage(img, 0, 0, width, height);
+
+          const compressedBase64 = canvas.toDataURL('image/jpeg', quality);
+          resolve(compressedBase64);
+        };
+        img.onerror = reject;
+        img.src = e.target?.result as string;
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        if (typeof reader.result === 'string') {
-          onImageUpload(reader.result);
-        }
-      };
-      reader.readAsDataURL(file);
+      try {
+        // Comprimir imagem antes de salvar
+        const compressedImage = await compressImage(file, 800, 0.8);
+        onImageUpload(compressedImage);
+      } catch (error) {
+        console.error('Erro ao processar imagem:', error);
+        alert('Erro ao processar imagem. Tente uma imagem menor.');
+      }
     }
   };
 
@@ -135,13 +172,13 @@ export const AppShell: React.FC<{
       )}
 
       {/* Scrollable Content */}
-      <div className="flex-1 overflow-y-auto overflow-x-hidden no-scrollbar pb-24">
+      <div className="flex-1 overflow-y-auto overflow-x-hidden no-scrollbar pb-32">
         {children}
       </div>
 
-      {/* Fixed Bottom Nav */}
+      {/* Static Flex Footer (Naturally pushes content up) */}
       {bottomNav && (
-        <div className="flex-none fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50 pb-safe-area shadow-2xl">
+        <div className="flex-none w-full bg-white border-t border-gray-200 z-50 pb-safe-area shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
           {bottomNav}
         </div>
       )}

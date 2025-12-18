@@ -287,17 +287,19 @@ export const ProfessionalPanel: React.FC<{
     };
 
     const Header = (
-        <div className="px-4 py-3 bg-white flex items-center justify-between shadow-sm">
-            <div className="flex items-center gap-3">
-                <img src={professional.avatarUrl} className="w-10 h-10 rounded-full border border-gray-200" />
-                <div>
-                    <div className="font-bold text-gray-900 leading-tight">{professional.name}</div>
-                    <div className="text-xs text-gray-500">Painel do Profissional</div>
+        <div className="px-4 py-4 bg-gradient-to-r from-blue-600 to-blue-700">
+            <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                    <img src={professional.avatarUrl} className="w-12 h-12 rounded-xl border-2 border-white/30 shadow-lg" />
+                    <div>
+                        <div className="font-bold text-white leading-tight">{professional.name}</div>
+                        <div className="text-xs text-white/70">Painel do Profissional</div>
+                    </div>
                 </div>
+                <button onClick={onLogout} className="text-white/70 hover:text-white bg-white/10 p-2 rounded-full">
+                    <LogOut className="w-5 h-5" />
+                </button>
             </div>
-            <button onClick={onLogout} className="text-gray-400 hover:text-red-500">
-                <LogOut className="w-5 h-5" />
-            </button>
         </div>
     );
 

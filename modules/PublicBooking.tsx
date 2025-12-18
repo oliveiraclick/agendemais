@@ -7,6 +7,7 @@ import { Service, Professional, Product, Review } from '../types';
 import { ReviewList } from '../components/ReviewList';
 import { StarRating } from '../components/StarRating';
 import { WaitlistModal } from '../components/WaitlistModal';
+import { ContextualHelp, HelpTopic } from '../components/ContextualHelp';
 
 export const PublicBooking: React.FC<{
     salonId: string;
@@ -15,7 +16,8 @@ export const PublicBooking: React.FC<{
     clientPhone?: string; // If from portal, pass the logged user phone
     onBack: () => void;
     onAdminAccess: (salonId: string) => void;
-}> = ({ salonId, professionalId, fromPortal, clientPhone: portalClientPhone, onBack, onAdminAccess }) => {
+    onHelp?: () => void;
+}> = ({ salonId, professionalId, fromPortal, clientPhone: portalClientPhone, onBack, onAdminAccess, onHelp }) => {
     const { salons, addAppointment, saveClient, getClientByPhone } = useStore();
     const salon = salons.find(s => s.id === salonId);
 
@@ -68,9 +70,14 @@ export const PublicBooking: React.FC<{
             const existingClient = getClientByPhone(portalClientPhone);
             if (existingClient) {
                 setClientName(existingClient.name);
-                setClientBirthDate(existingClient.birthDate);
+                setClientBirthDate(existingClient.birthDate || '');
                 setClientVerified(true);
                 setIsNewClient(false);
+            } else {
+                // Cliente não encontrado no banco - permitir agendamento com dados mínimos
+                setClientName(''); // Será pedido ou usará telefone
+                setClientVerified(true); // Permitir continuar
+                setIsNewClient(true);
             }
         }
     }, [professionalId, salon, fromPortal, portalClientPhone]);
@@ -221,12 +228,16 @@ export const PublicBooking: React.FC<{
     }, [clientPhone, isEditingData]);
 
     const handleBooking = () => {
-        if (selectedService && selectedProfessional && selectedDate && selectedTime && clientName && clientPhone) {
-            if (isNewClient || isEditingData) {
+        // Validação mais flexível para portal users
+        const finalClientName = clientName || (fromPortal ? `Cliente ${clientPhone.slice(-4)}` : '');
+        const finalClientPhone = clientPhone || portalClientPhone || '';
+
+        if (selectedService && selectedProfessional && selectedDate && selectedTime && finalClientPhone) {
+            if ((isNewClient || isEditingData) && clientName) {
                 saveClient({
                     id: Math.random().toString(36).substr(2, 9),
                     name: clientName,
-                    phone: clientPhone,
+                    phone: finalClientPhone,
                     birthDate: clientBirthDate
                 });
             }
@@ -236,8 +247,8 @@ export const PublicBooking: React.FC<{
                 salonId: salon.id,
                 serviceId: selectedService.id,
                 professionalId: selectedProfessional.id,
-                clientName: clientName,
-                clientPhone: clientPhone,
+                clientName: finalClientName,
+                clientPhone: finalClientPhone,
                 date: finalDate,
                 status: 'scheduled',
                 price: selectedService.price,
@@ -247,6 +258,10 @@ export const PublicBooking: React.FC<{
             // Ensure we move to step 4
             setStep(4);
             window.scrollTo(0, 0);
+        } else {
+            // Debug: mostrar o que está faltando
+            console.log('Missing:', { selectedService, selectedProfessional, selectedDate, selectedTime, finalClientName, finalClientPhone });
+            if (!finalClientPhone) alert('Por favor, informe seu telefone.');
         }
     };
 
@@ -350,16 +365,16 @@ export const PublicBooking: React.FC<{
     };
 
     const Header = (
-        <div className="flex items-center gap-3 px-4 py-3 bg-white border-b border-gray-100 shadow-sm z-30 relative">
+        <div className="flex items-center gap-3 px-4 py-4 bg-gradient-to-r from-brand-600 to-brand-700 z-30 relative">
             {/* Back Button Logic */}
             {(step > 0 && step < 4 && !fromPortal) || (step > 1 && fromPortal) ? (
-                <button onClick={() => setStep(step - 1 as any)} className="p-2 -ml-2 text-gray-600 rounded-full active:bg-gray-100">
+                <button onClick={() => setStep(step - 1 as any)} className="p-2 -ml-2 text-white/80 rounded-full hover:bg-white/10">
                     <ChevronLeft className="w-6 h-6" />
                 </button>
             ) : (
                 // Spacer or Back to Portal if applicable
                 fromPortal ? (
-                    <button onClick={onBack} className="p-2 -ml-2 text-gray-600 rounded-full active:bg-gray-100">
+                    <button onClick={onBack} className="p-2 -ml-2 text-white/80 rounded-full hover:bg-white/10">
                         <ChevronLeft className="w-6 h-6" />
                     </button>
                 ) : (
@@ -374,7 +389,7 @@ export const PublicBooking: React.FC<{
                     onClick={() => onAdminAccess(salon.id)}
                     title="Acesso do Proprietário"
                 >
-                    <div className="w-12 h-12 bg-brand-100 rounded-full overflow-hidden border-2 border-white shadow-md">
+                    <div className="w-12 h-12 bg-white rounded-xl overflow-hidden border-2 border-white/30 shadow-lg">
                         {salon.coverImage ? (
                             <img src={salon.coverImage} className="w-full h-full object-cover" />
                         ) : (
@@ -385,8 +400,8 @@ export const PublicBooking: React.FC<{
                     </div>
 
                     <div className="absolute -bottom-1 -right-1 z-50">
-                        <div className="bg-white rounded-full p-0.5 shadow-lg border border-gray-100">
-                            <div className="bg-gray-900 p-1.5 rounded-full hover:bg-black transition-colors">
+                        <div className="bg-white rounded-full p-0.5 shadow-lg">
+                            <div className="bg-gray-900 p-1.5 rounded-full">
                                 <Lock className="w-3 h-3 text-white" />
                             </div>
                         </div>
@@ -395,10 +410,10 @@ export const PublicBooking: React.FC<{
             )}
 
             <div className="flex-1 min-w-0">
-                <h1 className="font-bold text-gray-900 truncate text-base leading-tight">{salon.name}</h1>
-                {fromPortal && <span className="text-xs text-brand-600 font-bold">Agendamento</span>}
+                <h1 className="font-bold text-white truncate text-base leading-tight">{salon.name}</h1>
+                {fromPortal && <span className="text-xs text-white/70 font-bold">Agendamento</span>}
                 {selectedProfessional && step > 0 && step < 4 && (
-                    <div className="text-xs font-bold text-brand-600 flex items-center gap-1 animate-pulse">
+                    <div className="text-xs font-bold text-white/80 flex items-center gap-1">
                         Agendando com {selectedProfessional.name}
                     </div>
                 )}
@@ -824,6 +839,11 @@ export const PublicBooking: React.FC<{
                                                 <span>Total</span>
                                                 <span className="text-brand-600">R$ {finalTotal.toFixed(2)}</span>
                                             </div>
+                                        </div>
+
+                                        {/* Help Button */}
+                                        <div className="flex justify-center mt-4">
+                                            <ContextualHelp topic="booking-profile" />
                                         </div>
 
                                         {/* Add ref for scroll targeting */}

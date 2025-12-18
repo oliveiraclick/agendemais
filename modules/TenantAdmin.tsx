@@ -9,11 +9,12 @@ import {
     LayoutDashboard, Calendar, Users, Scissors, DollarSign, Settings,
     Sparkles, Lock, LogOut, Save, Plus, X, Check, Clock, CreditCard, Ticket,
     TrendingUp, TrendingDown, Wallet, Edit, Banknote, QrCode,
-    Target, Package, Megaphone, Gift, AlertTriangle, MessageCircle, ShoppingBag, Trash2, CalendarRange, Ban
+    Target, Package, Megaphone, Gift, AlertTriangle, MessageCircle, ShoppingBag, Trash2, CalendarRange, Ban, BookOpen
 } from 'lucide-react';
 import { generateSalonDescription } from '../services/geminiService';
+import { ContextualHelp, HelpTopic } from '../components/ContextualHelp';
 
-export const TenantAdmin: React.FC<{ salonId: string; onBack: () => void }> = ({ salonId, onBack }) => {
+export const TenantAdmin: React.FC<{ salonId: string; onBack: () => void; onHelp?: () => void }> = ({ salonId, onBack, onHelp }) => {
     const { salons, clients, updateSalon, addAppointment, addBlockedPeriod, addTransaction, addProduct, updateProduct, removeBlockedPeriod, saasPlans } = useStore();
 
     const salon = salons.find(s => s.id === salonId);
@@ -891,8 +892,21 @@ export const TenantAdmin: React.FC<{ salonId: string; onBack: () => void }> = ({
                                                 </div>
                                             )}
                                             <div className="mt-2 flex gap-2">
-                                                <button className="text-xs bg-gray-100 px-2 py-1 rounded hover:bg-gray-200 transition-colors">+ Entrada</button>
-                                                <button className="text-xs bg-gray-100 px-2 py-1 rounded hover:bg-gray-200 transition-colors">- Saída</button>
+                                                <button
+                                                    onClick={() => {
+                                                        const qty = parseInt(prompt('Quantidade de entrada:') || '0', 10);
+                                                        if (qty > 0) updateProduct(salon.id, prod.id, prod.quantity + qty);
+                                                    }}
+                                                    className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded hover:bg-green-200 transition-colors font-medium"
+                                                >+ Entrada</button>
+                                                <button
+                                                    onClick={() => {
+                                                        const qty = parseInt(prompt('Quantidade de saída:') || '0', 10);
+                                                        if (qty > 0 && prod.quantity >= qty) updateProduct(salon.id, prod.id, prod.quantity - qty);
+                                                        else if (qty > prod.quantity) alert('Quantidade maior que estoque disponível!');
+                                                    }}
+                                                    className="text-xs bg-red-100 text-red-700 px-2 py-1 rounded hover:bg-red-200 transition-colors font-medium"
+                                                >- Saída</button>
                                             </div>
                                         </div>
                                     </div>
@@ -1286,7 +1300,12 @@ export const TenantAdmin: React.FC<{ salonId: string; onBack: () => void }> = ({
                             </div>
                         </Card>
 
-                        <div className="p-4">
+                        <div className="p-4 space-y-3">
+                            <Button variant="secondary" className="w-full flex justify-center items-center gap-2" onClick={onHelp}>
+                                <div className="p-1 bg-blue-100 rounded-full"><BookOpen className="w-4 h-4 text-blue-600" /></div>
+                                Central de Ajuda & Tutoriais
+                            </Button>
+
                             <Button variant="danger" className="w-full flex justify-center items-center gap-2" onClick={onBack}>
                                 <LogOut className="w-4 h-4" /> Sair do App
                             </Button>
@@ -1305,23 +1324,38 @@ export const TenantAdmin: React.FC<{ salonId: string; onBack: () => void }> = ({
     };
 
     const Header = (
-        <div className="px-4 py-3 flex items-center gap-3 bg-white">
-            <div className="w-10 h-10 bg-brand-100 rounded-full overflow-hidden flex-shrink-0">
-                {salon.coverImage ? (
-                    <img src={salon.coverImage} className="w-full h-full object-cover" />
-                ) : (
-                    <div className="w-full h-full flex items-center justify-center text-brand-600 font-bold">{salon.name[0]}</div>
-                )}
-            </div>
-            <div>
-                <h1 className="font-bold text-gray-900 leading-tight">{salon.name}</h1>
-                <p className="text-xs text-gray-500 uppercase font-semibold">{activeTab}</p>
-            </div>
-            <div className="ml-auto">
-                {saveStatus && <span className="text-xs font-bold text-green-600 animate-pulse">{saveStatus}</span>}
+        <div className="px-4 py-4 bg-gradient-to-r from-brand-600 to-brand-700">
+            <div className="flex items-center gap-3">
+                <div className="w-12 h-12 bg-white rounded-xl overflow-hidden flex-shrink-0 shadow-lg">
+                    {salon.coverImage ? (
+                        <img src={salon.coverImage} className="w-full h-full object-cover" />
+                    ) : (
+                        <div className="w-full h-full flex items-center justify-center text-brand-600 font-bold text-xl">{salon.name[0]}</div>
+                    )}
+                </div>
+                <div className="flex-1">
+                    <h1 className="font-bold text-white leading-tight">{salon.name}</h1>
+                    <p className="text-xs text-white/70 uppercase font-semibold">{activeTab}</p>
+                </div>
+                <div>
+                    {saveStatus && <span className="text-xs font-bold text-white bg-white/20 px-2 py-1 rounded-full">{saveStatus}</span>}
+                </div>
             </div>
         </div>
     );
+
+    const getHelpTopic = (tab: typeof activeTab): HelpTopic => {
+        switch (tab) {
+            case 'dashboard': return 'owner-dashboard';
+            case 'agenda': return 'owner-agenda';
+            case 'inventory': return 'owner-inventory';
+            case 'team': return 'owner-team';
+            case 'marketing': return 'owner-marketing';
+            case 'finance': return 'owner-finance';
+            case 'settings': return 'owner-settings';
+            default: return 'owner-dashboard';
+        }
+    };
 
     return (
         <AppShell
@@ -1339,6 +1373,9 @@ export const TenantAdmin: React.FC<{ salonId: string; onBack: () => void }> = ({
             }
         >
             <div className="p-4">
+                <div className="flex justify-end mb-4">
+                    <ContextualHelp topic={getHelpTopic(activeTab)} />
+                </div>
                 {trialBanner}
                 {renderContent()}
             </div>

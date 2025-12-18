@@ -7,6 +7,8 @@ import { PublicBooking } from './modules/PublicBooking';
 import { SalonDirectory } from './modules/SalonDirectory';
 import { Login } from './modules/Login';
 import { Register } from './modules/Register';
+import { ForgotPassword } from './modules/ForgotPassword';
+import { ResetPassword } from './modules/ResetPassword';
 import { ProfessionalPanel } from './modules/ProfessionalPanel';
 import { HowItWorks } from './modules/HowItWorks';
 import { TermsOfUse } from './modules/TermsOfUse';
@@ -14,10 +16,13 @@ import { PrivacyPolicy } from './modules/PrivacyPolicy';
 import { InstallProvider } from './contexts/InstallContext';
 import { ClientPortal } from './modules/ClientPortal';
 import { InstallPrompt } from './components/InstallPrompt';
+import { HelpCenter } from './modules/HelpCenter';
 
 type ViewState =
   | { type: 'register' }
   | { type: 'login'; context: 'admin' | 'tenant'; salonId?: string; prefilledEmail?: string }
+  | { type: 'forgot-password' }
+  | { type: 'reset-password' }
   | { type: 'directory' }
   | { type: 'super-admin' }
   | { type: 'tenant'; salonId: string }
@@ -25,12 +30,24 @@ type ViewState =
   | { type: 'public'; salonId: string; professionalId?: string; fromPortal?: boolean; clientPhone?: string }
   | { type: 'client-portal'; clientPhone: string }
   | { type: 'how-it-works' }
+  | { type: 'help-center'; role?: 'owner' | 'client' }
   | { type: 'terms' }
   | { type: 'privacy' };
 
 const AppContent: React.FC = () => {
   // START AT REGISTER
   const [view, setView] = useState<ViewState>({ type: 'register' });
+
+  // SMART ROUTING: Detect PWA Standalone Mode
+  React.useEffect(() => {
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches ||
+      (window.navigator as any).standalone === true;
+
+    if (isStandalone) {
+      // Installed app -> Go to Login
+      setView({ type: 'login', context: 'tenant' });
+    }
+  }, []);
 
   const navigate = (newView: 'tenant' | 'public', salonId: string) => {
     setView({ type: newView, salonId });
@@ -67,6 +84,8 @@ const AppContent: React.FC = () => {
       );
     case 'how-it-works':
       return <HowItWorks onBack={goRegister} />;
+    case 'help-center':
+      return <HelpCenter onBack={goRegister} initialRole={view.role} />;
     case 'terms':
       return <TermsOfUse onBack={goRegister} />;
     case 'privacy':
@@ -74,27 +93,29 @@ const AppContent: React.FC = () => {
     case 'login':
       return (
         <Login
-          context={view.context}
-          salonId={view.salonId}
-          prefilledEmail={view.prefilledEmail}
-          onLogin={(id, isPro, proId) => {
-            if (view.context === 'tenant' && id) {
-              if (isPro && proId) {
-                setView({ type: 'professional', salonId: id, professionalId: proId });
-              } else {
-                navigate('tenant', id);
-              }
-            } else {
+          onCompanyLogin={(id) => {
+            if (id === 'admin') {
               setView({ type: 'super-admin' });
+            } else {
+              navigate('tenant', id);
             }
+          }}
+          onProfessionalLogin={(salonId, proId) => {
+            setView({ type: 'professional', salonId, professionalId: proId });
           }}
           onClientLogin={(phone) => {
             setView({ type: 'client-portal', clientPhone: phone });
           }}
           onBack={goRegister}
           onRegister={goRegister}
+          onForgotPassword={() => setView({ type: 'forgot-password' })}
+          prefilledEmail={view.type === 'login' ? view.prefilledEmail : undefined}
         />
       );
+    case 'forgot-password':
+      return <ForgotPassword onBack={() => setView({ type: 'login', context: 'tenant' })} />;
+    case 'reset-password':
+      return <ResetPassword />;
     case 'directory':
       return <SalonDirectory
         onBack={goHome}
@@ -112,7 +133,7 @@ const AppContent: React.FC = () => {
     case 'super-admin':
       return <SuperAdmin onNavigate={navigate} onLogout={goHome} />;
     case 'tenant':
-      return <TenantAdmin salonId={view.salonId} onBack={goHome} />;
+      return <TenantAdmin salonId={view.salonId} onBack={goHome} onHelp={() => setView({ type: 'help-center', role: 'owner' })} />;
     case 'professional':
       return <ProfessionalPanel salonId={view.salonId} professionalId={view.professionalId} onLogout={goHome} />;
     case 'public':
@@ -130,6 +151,7 @@ const AppContent: React.FC = () => {
           }
         }}
         onAdminAccess={handleSecretTenantAccess}
+        onHelp={() => setView({ type: 'help-center', role: 'client' })}
       />;
     default:
       return <div>Error: Unknown view</div>;

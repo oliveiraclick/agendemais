@@ -1,6 +1,6 @@
 
 export type PlanType = 'start' | 'professional' | 'redes';
-export type SubscriptionStatus = 'active' | 'late' | 'cancelled' | 'trial';
+export type SubscriptionStatus = 'active' | 'late' | 'cancelled' | 'trial' | 'exempt';
 export type TransactionType = 'income' | 'expense';
 export type PaymentMethod = 'cash' | 'pix' | 'credit_card' | 'debit_card' | 'credit_split';
 
@@ -122,10 +122,15 @@ export interface BlockedPeriod {
 
 export interface Salon {
   id: string;
-  createdAt: string; // New field for trial calculation
+  createdAt: string;
+  user_id: string; // Supabase Auth user ID - REQUIRED for new auth system
   name: string;
+
+  // LEGACY FIELDS - Keep for backward compatibility during migration
+  // TODO: Remove after all users migrated to Supabase Auth
   ownerEmail?: string;
   password?: string;
+
   slug: string;
   description: string;
   plan: PlanType;
@@ -170,8 +175,10 @@ export interface StoreContextType {
   coupons: Coupon[];
   clients: Client[];
   saasRevenueGoal: number; // For SaaS Dashboard
+  trialDays: number; // Configurable trial days
   currentSalonId: string | null;
   setCurrentSalonId: (id: string | null) => void;
+  setTrialDays: (days: number) => void;
   updateSalon: (salon: Salon) => void;
   addAppointment: (salonId: string, appointment: Appointment) => void;
   cancelAppointment: (salonId: string, appointmentId: string) => void; // New Action
@@ -186,7 +193,10 @@ export interface StoreContextType {
   updateProduct: (salonId: string, productId: string, quantity: number) => void;
   // SaaS Admin Actions
   updateSaaSPlan: (plan: SaaSPlan) => void;
+  addSaaSPlan: (plan: SaaSPlan) => void;
+  deleteSaaSPlan: (planId: string) => void;
   createCoupon: (code: string, percent: number) => void;
   toggleSalonStatus: (salonId: string) => void;
+  exemptSalon: (salonId: string) => void;
   addReview: (salonId: string, review: Review) => void; // Added back
 }

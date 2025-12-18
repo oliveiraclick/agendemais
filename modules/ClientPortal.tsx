@@ -203,8 +203,12 @@ export const ClientPortal: React.FC<{
                     {currentSalon.gallery && currentSalon.gallery.length > 0 ? (
                         <div className="flex gap-3 overflow-x-auto pb-4 no-scrollbar -mx-4 px-4">
                             {currentSalon.gallery.map((img, i) => (
-                                <div key={i} className="flex-shrink-0 w-40 h-40 rounded-xl overflow-hidden shadow-sm bg-gray-100">
-                                    <img src={img} className="w-full h-full object-cover" />
+                                <div
+                                    key={i}
+                                    className="flex-shrink-0 w-40 h-40 rounded-xl overflow-hidden shadow-sm bg-gray-100 cursor-pointer active:scale-95 transition-transform"
+                                    onClick={() => window.open(img, '_blank')}
+                                >
+                                    <img src={img} className="w-full h-full object-cover hover:scale-110 transition-transform duration-300" />
                                 </div>
                             ))}
                         </div>
@@ -222,9 +226,15 @@ export const ClientPortal: React.FC<{
                     </h3>
                     <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
                         <p className="text-sm text-gray-700 font-medium mb-3">{currentSalon.address}</p>
-                        <div className="h-32 bg-gray-200 rounded-lg w-full flex items-center justify-center text-gray-400 text-xs font-bold uppercase tracking-wider">
-                            Mapa do Google
-                        </div>
+                        <a
+                            href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(currentSalon.address)}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="h-32 bg-gray-100 rounded-lg w-full flex flex-col items-center justify-center text-brand-600 text-xs font-bold uppercase tracking-wider hover:bg-brand-50 transition-colors border-2 border-dashed border-gray-200 hover:border-brand-300"
+                        >
+                            <MapPin className="w-8 h-8 mb-2 text-brand-500" />
+                            Abrir no Google Maps
+                        </a>
                     </div>
                 </div>
 
@@ -305,15 +315,16 @@ export const ClientPortal: React.FC<{
         <AppShell
             header={
                 viewMode === 'list' ? (
-                    <div className="px-4 py-4 bg-white border-b border-gray-100">
-                        <div className="font-bold text-lg text-brand-600">Agende +</div>
+                    <div className="px-4 py-4 bg-gradient-to-r from-brand-600 to-brand-700">
+                        <div className="font-bold text-lg text-white">Agende +</div>
+                        <div className="text-xs text-white/70">Seus favoritos</div>
                     </div>
                 ) : (
-                    <div className="px-4 py-3 bg-white flex items-center gap-3 border-b border-gray-100 shadow-sm">
-                        <button onClick={handleBackToFavorites} className="p-1 -ml-1 text-gray-600 rounded-full hover:bg-gray-100">
+                    <div className="px-4 py-4 bg-gradient-to-r from-brand-600 to-brand-700 flex items-center gap-3">
+                        <button onClick={handleBackToFavorites} className="p-1.5 -ml-1 text-white/80 rounded-full hover:bg-white/10">
                             <ChevronLeft className="w-6 h-6" />
                         </button>
-                        <div className="font-bold text-gray-900 truncate">
+                        <div className="font-bold text-white truncate">
                             {currentSalon?.name}
                         </div>
                     </div>
