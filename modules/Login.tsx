@@ -28,16 +28,12 @@ export const Login: React.FC<{
 
   useEffect(() => {
     if (prefilledEmail) setEmail(prefilledEmail);
-    else {
-      // Default test credentials
-      setEmail('contato@vintage.com');
-      setPassword('123');
-    }
+    // Campos vazios por padrão (sem credenciais de teste)
   }, [prefilledEmail]);
 
   const handleCompanyLogin = () => {
     // 1. Check for Admin SaaS
-    if (email === 'admin@agendeplus.com' && password === 'admin') {
+    if (email === 'adm@agendemais.app' && password === 'agendemais@1112') {
       onLogin(undefined, false); // No salonId = Super Admin
       return;
     }
