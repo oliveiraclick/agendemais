@@ -439,7 +439,8 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
             setCurrentSalonId, setTrialDays, updateSalon, addAppointment, createSalon,
             addBlockedPeriod, saveClient, getClientByPhone, cancelAppointment,
             addTransaction, updateSaaSPlan, addSaaSPlan, deleteSaaSPlan, createCoupon, toggleSalonStatus, exemptSalon,
-            addProduct, updateProduct, addReview
+            addProduct, updateProduct, addReview,
+            refreshSalons: async () => { await loadDataFromSupabase(); }
         }}>
             {children}
         </StoreContext.Provider>

@@ -9,7 +9,7 @@ export const Register: React.FC<{
     onLoginRedirect: () => void;
     onSuccess: (email: string) => void;
 }> = ({ onLoginRedirect, onSuccess }) => {
-    const { createSalon } = useStore();
+    const { createSalon, refreshSalons } = useStore();
     const { signUp } = useAuth();
 
     const [formData, setFormData] = useState({
@@ -80,19 +80,13 @@ export const Register: React.FC<{
             });
 
             if (user) {
-                // Step 2: Create salon in database manually
-                await createSalon(
-                    formData.salonName,
-                    'professional',
-                    formData.address,
-                    formData.ownerName,
-                    formData.email,
-                    formData.password,
-                    undefined, // couponCode
-                    user.id // CRITICAL: Pass Supabase Auth user ID
-                );
+                // Step 2: Wait for DB Trigger to create salon
+                // The trigger 'on_auth_user_created' runs automatically.
 
-                // Step 3: Show success (skip email verification for now)
+                // Step 3: Refresh local store to get the new salon
+                await refreshSalons();
+
+                // Step 4: Show success
                 setIsRegistered(true);
                 setIsLoading(false);
             }

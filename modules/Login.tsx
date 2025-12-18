@@ -101,7 +101,7 @@ export const Login: React.FC<{
           </div>
         </div>
         <p className="mt-1 text-center text-sm text-gray-600">
-          Acesso Restrito <span className="text-[10px] text-gray-400">v1.7.0</span>
+          Acesso Restrito <span className="text-[10px] text-gray-400">v1.8.0</span>
         </p>
       </div>
 
