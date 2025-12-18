@@ -304,6 +304,9 @@ export const Login: React.FC<{
             </button>
           </div>
         </div>
+
+        {/* Versão discreta */}
+        <div className="text-center text-[10px] text-gray-300 mt-4">v1.0.5</div>
       </div >
     </div >
   );

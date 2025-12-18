@@ -186,6 +186,8 @@ export interface StoreContextType {
   updateProduct: (salonId: string, productId: string, quantity: number) => void;
   // SaaS Admin Actions
   updateSaaSPlan: (plan: SaaSPlan) => void;
+  addSaaSPlan: (plan: SaaSPlan) => void;
+  deleteSaaSPlan: (planId: string) => void;
   createCoupon: (code: string, percent: number) => void;
   toggleSalonStatus: (salonId: string) => void;
   addReview: (salonId: string, review: Review) => void; // Added back

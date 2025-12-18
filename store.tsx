@@ -8,29 +8,13 @@ const generateId = () => Math.random().toString(36).substr(2, 9);
 
 const INITIAL_PLANS: SaaSPlan[] = [
     {
-        id: 'start',
-        name: 'Gratuito',
-        price: 0,
-        perProfessionalPrice: 0,
-        maxProfessionals: 1,
-        features: ['Agenda Simples', 'Link Personalizado', 'Até 50 agendamentos/mês']
-    },
-    {
         id: 'professional',
-        name: 'Start',
-        price: 29.90,
+        name: 'Profissional',
+        price: 29.00,
         perProfessionalPrice: 10,
-        maxProfessionals: 1,
+        maxProfessionals: 99,
         isRecommended: true,
-        features: ['Agenda Ilimitada', 'Controle Financeiro', 'Gestão de Estoque', 'Site Próprio']
-    },
-    {
-        id: 'redes',
-        name: 'Redes',
-        price: 19.90,
-        perProfessionalPrice: 10,
-        maxProfessionals: 11,
-        features: ['Múltiplos Profissionais (+10)', 'Dashboard Avançado', 'Campanhas de Marketing', 'Suporte Prioritário']
+        features: ['Agenda Ilimitada', 'Controle Financeiro', 'Gestão de Estoque', 'Site Próprio', 'Marketing IA', 'Suporte Prioritário']
     }
 ];
 
@@ -354,6 +338,14 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         setSaasPlans(prev => prev.map(p => p.id === updatedPlan.id ? updatedPlan : p));
     };
 
+    const addSaaSPlan = (plan: SaaSPlan) => {
+        setSaasPlans(prev => [...prev, plan]);
+    };
+
+    const deleteSaaSPlan = (planId: string) => {
+        setSaasPlans(prev => prev.filter(p => p.id !== planId));
+    };
+
     const createCoupon = (code: string, percent: number) => {
         setCoupons(prev => [...prev, {
             id: generateId(),
@@ -398,7 +390,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
             salons, saasPlans, coupons, clients, saasRevenueGoal, currentSalonId,
             setCurrentSalonId, updateSalon, addAppointment, createSalon,
             addBlockedPeriod, saveClient, getClientByPhone, cancelAppointment,
-            addTransaction, updateSaaSPlan, createCoupon, toggleSalonStatus,
+            addTransaction, updateSaaSPlan, addSaaSPlan, deleteSaaSPlan, createCoupon, toggleSalonStatus,
             addProduct, updateProduct, addReview
         }}>
             {children}
