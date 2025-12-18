@@ -64,8 +64,9 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
             const { data: clientsData } = await supabase.from('clients').select('*');
 
             // Reconstruct nested Salon objects
+            let fullSalons: Salon[] = [];
             if (salonsData) {
-                const fullSalons: Salon[] = salonsData.map(s => ({
+                fullSalons = salonsData.map(s => ({
                     ...s,
                     services: servicesData?.filter(svc => svc.salon_id === s.id) || [],
                     professionals: professionalsData?.filter(p => p.salon_id === s.id) || [],
@@ -89,10 +90,10 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
                 setClients(mappedClients);
             }
 
-            return true;
+            return fullSalons;
         } catch (error) {
             console.error("Supabase load error:", error);
-            return false;
+            return null;
         }
     };
 
@@ -440,7 +441,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
             addBlockedPeriod, saveClient, getClientByPhone, cancelAppointment,
             addTransaction, updateSaaSPlan, addSaaSPlan, deleteSaaSPlan, createCoupon, toggleSalonStatus, exemptSalon,
             addProduct, updateProduct, addReview,
-            refreshSalons: async () => { await loadDataFromSupabase(); }
+            refreshSalons: async () => { return await loadDataFromSupabase(); }
         }}>
             {children}
         </StoreContext.Provider>

@@ -83,8 +83,26 @@ export const Register: React.FC<{
                 // Step 2: Wait for DB Trigger to create salon
                 // The trigger 'on_auth_user_created' runs automatically.
 
-                // Step 3: Refresh local store to get the new salon
-                await refreshSalons();
+                // Step 3: Refresh local store to get the new salon (with polling)
+                let attempts = 0;
+                let mySalon = null;
+
+                while (attempts < 5) {
+                    const data = await refreshSalons();
+                    mySalon = data?.find(s => s.user_id === user.id);
+
+                    if (mySalon) break;
+
+                    // Wait 1s before retrying
+                    await new Promise(r => setTimeout(r, 1000));
+                    attempts++;
+                }
+
+                if (!mySalon) {
+                    console.warn('Salon not found after polling. Trigger might be slow.');
+                    // We still proceed to success, but maybe show a warning or just hope login handles it?
+                    // Login also has a refresh, so it might catch it then.
+                }
 
                 // Step 4: Show success
                 setIsRegistered(true);

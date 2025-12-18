@@ -199,5 +199,5 @@ export interface StoreContextType {
   toggleSalonStatus: (salonId: string) => void;
   exemptSalon: (salonId: string) => void;
   addReview: (salonId: string, review: Review) => void; // Added back
-  refreshSalons: () => Promise<void>;
+  refreshSalons: () => Promise<Salon[] | null>;
 }
