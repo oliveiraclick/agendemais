@@ -1,6 +1,6 @@
 
 export type PlanType = 'start' | 'professional' | 'redes';
-export type SubscriptionStatus = 'active' | 'late' | 'cancelled' | 'trial';
+export type SubscriptionStatus = 'active' | 'late' | 'cancelled' | 'trial' | 'exempt';
 export type TransactionType = 'income' | 'expense';
 export type PaymentMethod = 'cash' | 'pix' | 'credit_card' | 'debit_card' | 'credit_split';
 
@@ -190,5 +190,6 @@ export interface StoreContextType {
   deleteSaaSPlan: (planId: string) => void;
   createCoupon: (code: string, percent: number) => void;
   toggleSalonStatus: (salonId: string) => void;
+  exemptSalon: (salonId: string) => void;
   addReview: (salonId: string, review: Review) => void; // Added back
 }

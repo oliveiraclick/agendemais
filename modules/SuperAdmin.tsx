@@ -2,14 +2,14 @@
 import React, { useState } from 'react';
 import { useStore } from '../store';
 import { Button, Card, Input, Badge, AppShell, MobileNav, MobileNavItem } from '../components/UI';
-import { LayoutDashboard, Users, Plus, LogOut, Tags, DollarSign, Pen, Ban, CheckCircle, TrendingUp, Target, PartyPopper } from 'lucide-react';
+import { LayoutDashboard, Users, Plus, LogOut, Tags, DollarSign, Pen, Ban, CheckCircle, TrendingUp, Target, PartyPopper, Gift } from 'lucide-react';
 import { Salon, SaaSPlan } from '../types';
 
 export const SuperAdmin: React.FC<{
     onNavigate: (view: 'tenant' | 'public', salonId: string) => void,
     onLogout: () => void
 }> = ({ onNavigate, onLogout }) => {
-    const { salons, saasPlans, coupons, saasRevenueGoal, createSalon, updateSaaSPlan, addSaaSPlan, deleteSaaSPlan, createCoupon, toggleSalonStatus } = useStore();
+    const { salons, saasPlans, coupons, saasRevenueGoal, createSalon, updateSaaSPlan, addSaaSPlan, deleteSaaSPlan, createCoupon, toggleSalonStatus, exemptSalon } = useStore();
     const [activeTab, setActiveTab] = useState<'dashboard' | 'clients' | 'plans' | 'coupons'>('dashboard');
 
     // Local states for forms
@@ -148,8 +148,8 @@ export const SuperAdmin: React.FC<{
                                         <h4 className="font-bold text-gray-900">{salon.name}</h4>
                                         <p className="text-xs text-gray-500">Desde {new Date().toLocaleDateString()}</p>
                                     </div>
-                                    <Badge color={salon.subscriptionStatus === 'active' ? 'green' : 'red'}>
-                                        {salon.subscriptionStatus === 'active' ? 'Em dia' : 'Atrasado'}
+                                    <Badge color={salon.subscriptionStatus === 'active' ? 'green' : salon.subscriptionStatus === 'exempt' ? 'purple' : 'red'}>
+                                        {salon.subscriptionStatus === 'active' ? 'Em dia' : salon.subscriptionStatus === 'exempt' ? 'Isento' : salon.subscriptionStatus === 'trial' ? 'Trial' : 'Atrasado'}
                                     </Badge>
                                 </div>
 
@@ -160,7 +160,7 @@ export const SuperAdmin: React.FC<{
                                     </div>
                                     <div>
                                         <div className="text-[10px] text-gray-400 uppercase">Valor</div>
-                                        <div className="font-medium text-sm">R$ {salon.monthlyFee?.toFixed(2)}</div>
+                                        <div className="font-medium text-sm">{salon.subscriptionStatus === 'exempt' ? 'GRÁTIS' : `R$ ${salon.monthlyFee?.toFixed(2)}`}</div>
                                     </div>
                                     <div>
                                         <div className="text-[10px] text-gray-400 uppercase">Cobrança</div>
@@ -171,14 +171,25 @@ export const SuperAdmin: React.FC<{
                                 </div>
 
                                 <div className="flex gap-2 mt-2">
-                                    {salon.subscriptionStatus === 'active' ? (
-                                        <Button variant="outline" className="w-full text-xs py-1.5 h-auto text-red-600 border-red-100 hover:bg-red-50" onClick={() => toggleSalonStatus(salon.id)}>
-                                            <Ban className="w-3 h-3 mr-1 inline" /> Bloquear / Marcar Atrasado
-                                        </Button>
-                                    ) : (
-                                        <Button variant="outline" className="w-full text-xs py-1.5 h-auto text-green-600 border-green-100 hover:bg-green-50" onClick={() => toggleSalonStatus(salon.id)}>
-                                            <CheckCircle className="w-3 h-3 mr-1 inline" /> Confirmar Pagamento
-                                        </Button>
+                                    {/* Botão Isentar */}
+                                    <Button
+                                        variant="outline"
+                                        className={`flex-1 text-xs py-1.5 h-auto ${salon.subscriptionStatus === 'exempt' ? 'text-gray-600 border-gray-200' : 'text-purple-600 border-purple-100 hover:bg-purple-50'}`}
+                                        onClick={() => exemptSalon(salon.id)}
+                                    >
+                                        <Gift className="w-3 h-3 mr-1 inline" /> {salon.subscriptionStatus === 'exempt' ? 'Remover Isenção' : 'Isentar'}
+                                    </Button>
+
+                                    {salon.subscriptionStatus !== 'exempt' && (
+                                        salon.subscriptionStatus === 'active' ? (
+                                            <Button variant="outline" className="flex-1 text-xs py-1.5 h-auto text-red-600 border-red-100 hover:bg-red-50" onClick={() => toggleSalonStatus(salon.id)}>
+                                                <Ban className="w-3 h-3 mr-1 inline" /> Bloquear
+                                            </Button>
+                                        ) : (
+                                            <Button variant="outline" className="w-full text-xs py-1.5 h-auto text-green-600 border-green-100 hover:bg-green-50" onClick={() => toggleSalonStatus(salon.id)}>
+                                                <CheckCircle className="w-3 h-3 mr-1 inline" /> Confirmar Pagamento
+                                            </Button>
+                                        )
                                     )}
                                 </div>
                             </div>

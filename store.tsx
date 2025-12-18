@@ -374,6 +374,23 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         }));
     };
 
+    const exemptSalon = (salonId: string) => {
+        setSalons(prev => prev.map(s => {
+            if (s.id === salonId) {
+                const newStatus = s.subscriptionStatus === 'exempt' ? 'active' : 'exempt';
+                if (supabase) {
+                    supabase.from('salons').update({ subscription_status: newStatus }).eq('id', salonId);
+                }
+                return {
+                    ...s,
+                    subscriptionStatus: newStatus,
+                    monthlyFee: newStatus === 'exempt' ? 0 : s.monthlyFee
+                };
+            }
+            return s;
+        }));
+    };
+
     const addReview = (salonId: string, review: Review) => {
         setSalons(prev => prev.map(s => {
             if (s.id === salonId) {
@@ -392,7 +409,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
             salons, saasPlans, coupons, clients, saasRevenueGoal, currentSalonId,
             setCurrentSalonId, updateSalon, addAppointment, createSalon,
             addBlockedPeriod, saveClient, getClientByPhone, cancelAppointment,
-            addTransaction, updateSaaSPlan, addSaaSPlan, deleteSaaSPlan, createCoupon, toggleSalonStatus,
+            addTransaction, updateSaaSPlan, addSaaSPlan, deleteSaaSPlan, createCoupon, toggleSalonStatus, exemptSalon,
             addProduct, updateProduct, addReview
         }}>
             {children}
