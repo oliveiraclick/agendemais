@@ -24,11 +24,8 @@ export const Register: React.FC<{
     const [isLoading, setIsLoading] = useState(false);
     const [isRegistered, setIsRegistered] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
-<<<<<<< HEAD
     const [registrationStep, setRegistrationStep] = useState<'form' | 'verifying'>('form');
     const [error, setError] = useState('');
-=======
->>>>>>> ed746be00dd1dc17706d7be2e58310eac5a733f8
 
     // Email validation
     const isValidEmail = (email: string): boolean => {
@@ -74,7 +71,6 @@ export const Register: React.FC<{
 
         setIsLoading(true);
 
-<<<<<<< HEAD
         try {
             // Step 1: Create Supabase Auth user
             const { user } = await signUp(formData.email, formData.password, {
@@ -97,19 +93,6 @@ export const Register: React.FC<{
                 );
 
                 // Step 3: Show success (skip email verification for now)
-=======
-        setTimeout(() => {
-            createSalon(
-                formData.salonName,
-                'professional',
-                formData.address,
-                formData.ownerName,
-                formData.email,
-                formData.password
-            );
-
-            setTimeout(() => {
->>>>>>> ed746be00dd1dc17706d7be2e58310eac5a733f8
                 setIsRegistered(true);
                 setIsLoading(false);
             }
@@ -358,7 +341,6 @@ export const Register: React.FC<{
                                 {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                             </button>
                         </div>
-<<<<<<< HEAD
                         {/* Password Strength Indicator */}
                         {formData.password && (
                             <div className="mt-2 space-y-1">
@@ -383,11 +365,6 @@ export const Register: React.FC<{
                             <span>{error}</span>
                         </div>
                     )}
-
-=======
-                    </div>
-
->>>>>>> ed746be00dd1dc17706d7be2e58310eac5a733f8
                     {/* Botão criar */}
                     <Button
                         className="w-full py-4 text-base font-bold rounded-2xl shadow-lg shadow-brand-200 flex items-center justify-center gap-2 mt-2"
