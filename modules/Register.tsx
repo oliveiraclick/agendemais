@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { useStore } from '../store';
 import { Button, AgendeLogo } from '../components/UI';
-import { CalendarCheck, ArrowRight, User, Mail, Phone, Lock, Store, MapPin, ChevronLeft, ChevronRight } from 'lucide-react';
+import { CalendarCheck, ArrowRight, User, Mail, Phone, Lock, Store, MapPin, ChevronLeft, ChevronRight, Eye, EyeOff } from 'lucide-react';
 
 export const Register: React.FC<{
     onLoginRedirect: () => void;
@@ -21,6 +21,7 @@ export const Register: React.FC<{
 
     const [isLoading, setIsLoading] = useState(false);
     const [isRegistered, setIsRegistered] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
 
     const handleSubmit = () => {
         if (!formData.ownerName || !formData.salonName || !formData.email || !formData.password || !formData.address) {
@@ -69,9 +70,23 @@ export const Register: React.FC<{
                 <div className="flex-1 bg-white rounded-t-[32px] px-6 pt-8 pb-8">
                     <div className="text-center mb-6">
                         <p className="text-gray-600">
-                            Para começar a usar, realize o pagamento da taxa de adesão.
+                            Escolha como deseja começar:
                         </p>
                     </div>
+
+                    {/* Botão Testar Grátis */}
+                    <Button
+                        className="w-full py-4 text-base font-bold bg-blue-600 hover:bg-blue-700 rounded-2xl shadow-lg shadow-blue-200 flex items-center justify-center gap-2 mb-4"
+                        onClick={() => {
+                            alert(`🎉 Parabéns! Você tem 7 dias de teste grátis.\n\nAproveite para conhecer todas as funcionalidades!`);
+                            onSuccess(formData.email);
+                        }}
+                    >
+                        Quero Testar Grátis
+                        <ArrowRight className="w-5 h-5" />
+                    </Button>
+
+                    <div className="text-center text-xs text-gray-400 mb-4">ou</div>
 
                     <Button
                         className="w-full py-4 text-base font-bold bg-green-600 hover:bg-green-700 rounded-2xl shadow-lg shadow-green-200 flex items-center justify-center gap-2 mb-4"
@@ -204,12 +219,19 @@ export const Register: React.FC<{
                         <div className="relative">
                             <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                             <input
-                                type="password"
-                                className="w-full pl-10 pr-3 py-3 bg-gray-50 border-0 rounded-xl focus:ring-2 focus:ring-brand-500 outline-none text-sm"
+                                type={showPassword ? 'text' : 'password'}
+                                className="w-full pl-10 pr-10 py-3 bg-gray-50 border-0 rounded-xl focus:ring-2 focus:ring-brand-500 outline-none text-sm"
                                 placeholder="••••••••"
                                 value={formData.password}
                                 onChange={e => setFormData({ ...formData, password: e.target.value })}
                             />
+                            <button
+                                type="button"
+                                onClick={() => setShowPassword(!showPassword)}
+                                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                            >
+                                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                            </button>
                         </div>
                     </div>
 
