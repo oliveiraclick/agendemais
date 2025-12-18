@@ -14,7 +14,7 @@ export const Login: React.FC<{
   onForgotPassword?: () => void;
   prefilledEmail?: string;
 }> = ({ onCompanyLogin, onClientLogin, onProfessionalLogin, onRegister, onForgotPassword, prefilledEmail }) => {
-  const { salons } = useStore();
+  const { salons, refreshSalons } = useStore();
   const { signIn } = useAuth();
 
   const [activeTab, setActiveTab] = useState<'company' | 'client'>('company');
@@ -42,6 +42,9 @@ export const Login: React.FC<{
       const { session } = await signIn(cleanEmail, cleanPassword);
 
       if (session?.user) {
+        // Force refresh to ensure we have the latest data (especially after registration)
+        await refreshSalons();
+
         // Find salon by user_id
         const salon = salons.find(s => s.user_id === session.user.id);
 
@@ -60,7 +63,7 @@ export const Login: React.FC<{
         }
 
         // No salon found for this user
-        alert('Nenhum salão encontrado para este usuário. Entre em contato com o suporte.');
+        alert('Nenhuma conta encontrada para este usuário. Entre em contato com o suporte.');
         return;
       }
 
