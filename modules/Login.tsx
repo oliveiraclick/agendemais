@@ -159,6 +159,7 @@ export const Login: React.FC<{
           <p className="mt-2 text-center text-sm text-gray-600">
             Acesso Restrito
           </p>
+          <p className="text-center text-[10px] text-gray-400">v1.0.9</p>
 
           <div className="mt-4 flex justify-center">
             <ContextualHelp topic="login" />
@@ -305,8 +306,6 @@ export const Login: React.FC<{
           </div>
         </div>
 
-        {/* Versão discreta */}
-        <div className="text-center text-[10px] text-gray-300 mt-4">v1.0.8</div>
       </div >
     </div >
   );
