@@ -40,7 +40,7 @@ export const TenantAdmin: React.FC<{ salonId: string; onBack: () => void; onHelp
     // Finance Form
     const [newTrans, setNewTrans] = useState<{
         description: string; amount: string; type: TransactionType; category: string; method: PaymentMethod; date: string; installments: string;
-    }>({ description: '', amount: '', type: 'expense', category: 'Despesas Gerais', method: 'cash', date: new Date().toISOString().split('T')[0], installments: '1' });
+    }>({ description: '', amount: '', type: 'expense', category: 'Débitos Gerais', method: 'cash', date: new Date().toISOString().split('T')[0], installments: '1' });
     const [isAddingTrans, setIsAddingTrans] = useState(false);
     const [financePeriod, setFinancePeriod] = useState<'today' | 'month'>('month');
 
@@ -1031,62 +1031,113 @@ export const TenantAdmin: React.FC<{ salonId: string; onBack: () => void; onHelp
                             </button>
                         </div>
 
-                        <div className="grid grid-cols-3 gap-2">
-                            <div className="bg-green-50 p-3 rounded-lg border border-green-100">
-                                <div className="text-[10px] uppercase text-green-600 font-bold">Receitas</div>
-                                <div className="text-lg font-bold text-green-700">R$ {totalIncome.toFixed(0)}</div>
+                        {/* NOVO LAYOUT DE CARDS (Inspirado na imagem) */}
+                        <Card className={`${balance >= 0 ? 'bg-gradient-to-r from-brand-600 to-brand-700' : 'bg-gradient-to-r from-red-600 to-red-700'} text-white border-0 shadow-lg`}>
+                            <div className="text-sm opacity-80 mb-1">Saldo Total</div>
+                            <div className="text-4xl font-extrabold">R$ {balance.toFixed(2)}</div>
+                            <div className="flex gap-2 mt-4 overflow-x-auto no-scrollbar py-1">
+                                <div className="flex items-center gap-1 text-[10px] bg-white/20 px-2 py-1 rounded-full whitespace-nowrap">
+                                    <Target className="w-3 h-3" /> Meta Mensal: R$ {revenueGoal.toFixed(0)}
+                                </div>
                             </div>
-                            <div className="bg-red-50 p-3 rounded-lg border border-red-100">
-                                <div className="text-[10px] uppercase text-red-600 font-bold">Despesas</div>
-                                <div className="text-lg font-bold text-red-700">R$ {totalExpense.toFixed(0)}</div>
+                        </Card>
+
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
+                                <div className="flex items-center gap-2 mb-2">
+                                    <div className="p-1.5 bg-green-50 rounded-lg text-green-600">
+                                        <TrendingUp className="w-4 h-4" />
+                                    </div>
+                                    <div className="text-[10px] uppercase text-gray-500 font-bold">Entradas</div>
+                                </div>
+                                <div className="text-xl font-bold text-green-600">R$ {totalIncome.toFixed(2)}</div>
                             </div>
-                            <div className="bg-white p-3 rounded-lg border border-gray-200">
-                                <div className="text-[10px] uppercase text-gray-500 font-bold">Saldo</div>
-                                <div className={`text-lg font-bold ${balance >= 0 ? 'text-blue-600' : 'text-red-600'}`}>R$ {balance.toFixed(0)}</div>
+                            <div className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
+                                <div className="flex items-center gap-2 mb-2">
+                                    <div className="p-1.5 bg-red-50 rounded-lg text-red-600">
+                                        <TrendingDown className="w-4 h-4" />
+                                    </div>
+                                    <div className="text-[10px] uppercase text-gray-500 font-bold">Saídas</div>
+                                </div>
+                                <div className="text-xl font-bold text-red-600">-R$ {totalExpense.toFixed(2)}</div>
                             </div>
                         </div>
 
-                        <Button className="w-full flex items-center justify-center gap-2" onClick={() => setIsAddingTrans(true)}>
-                            <Plus className="w-4 h-4" /> Novo Lançamento
-                        </Button>
+                        <div className="flex justify-between items-center px-1 pt-2 border-t border-gray-100">
+                            <h3 className="font-bold text-gray-800">Extrato</h3>
+                            <button
+                                onClick={() => setIsAddingTrans(true)}
+                                className="bg-brand-600 text-white px-4 py-2 rounded-full text-xs font-bold shadow-lg shadow-brand-200 flex items-center gap-2 active:scale-95 transition-transform"
+                            >
+                                <Plus className="w-4 h-4" /> Lançamento
+                            </button>
+                        </div>
 
                         {isAddingTrans && (
-                            <Card className="bg-gray-50 border-gray-200 animate-in slide-in-from-top-4">
-                                <div className="space-y-3">
-                                    <div className="flex gap-2">
-                                        <button className={`flex-1 py-2 rounded-md font-bold text-sm ${newTrans.type === 'expense' ? 'bg-red-100 text-red-700 ring-2 ring-red-500' : 'bg-white text-gray-600'}`} onClick={() => setNewTrans({ ...newTrans, type: 'expense' })}>Despesa</button>
-                                        <button className={`flex-1 py-2 rounded-md font-bold text-sm ${newTrans.type === 'income' ? 'bg-green-100 text-green-700 ring-2 ring-green-500' : 'bg-white text-gray-600'}`} onClick={() => setNewTrans({ ...newTrans, type: 'income' })}>Receita</button>
+                            <div className="fixed inset-0 bg-black/50 z-50 flex items-end sm:items-center justify-center p-4 backdrop-blur-sm animate-in fade-in">
+                                <Card className="w-full max-w-sm rounded-3xl animate-in slide-in-from-bottom-10">
+                                    <div className="flex justify-between items-center mb-6">
+                                        <h3 className="font-bold text-lg">Novo Lançamento</h3>
+                                        <button onClick={() => setIsAddingTrans(false)} className="p-2 bg-gray-100 rounded-full text-gray-400">
+                                            <X className="w-4 h-4" />
+                                        </button>
                                     </div>
-                                    <Input placeholder="Descrição (ex: Luz, Água)" value={newTrans.description} onChange={e => setNewTrans({ ...newTrans, description: e.target.value })} />
-                                    <div className="grid grid-cols-2 gap-2">
-                                        <Input type="number" placeholder="Valor R$" value={newTrans.amount} onChange={e => setNewTrans({ ...newTrans, amount: e.target.value })} />
-                                        <Input type="date" value={newTrans.date} onChange={e => setNewTrans({ ...newTrans, date: e.target.value })} />
-                                    </div>
-                                    <select className="w-full px-3 py-2 border rounded-md" value={newTrans.method} onChange={e => setNewTrans({ ...newTrans, method: e.target.value as PaymentMethod })}>
-                                        <option value="cash">Dinheiro</option>
-                                        <option value="pix">Pix</option>
-                                        <option value="debit_card">Cartão de Débito</option>
-                                        <option value="credit_card">Cartão de Crédito (1x)</option>
-                                        <option value="credit_split">Cartão de Crédito (Parcelado)</option>
-                                    </select>
+                                    <div className="space-y-4">
+                                        <div className="flex gap-2 p-1 bg-gray-100 rounded-xl">
+                                            <button
+                                                className={`flex-1 py-3 rounded-lg font-bold text-sm transition-all ${newTrans.type === 'income' ? 'bg-white text-green-600 shadow-sm scale-100' : 'text-gray-500 hover:text-gray-700'}`}
+                                                onClick={() => setNewTrans({ ...newTrans, type: 'income', category: 'Créditos Diversos' })}
+                                            >
+                                                Crédito (Entrada)
+                                            </button>
+                                            <button
+                                                className={`flex-1 py-3 rounded-lg font-bold text-sm transition-all ${newTrans.type === 'expense' ? 'bg-white text-red-600 shadow-sm scale-100' : 'text-gray-500 hover:text-gray-700'}`}
+                                                onClick={() => setNewTrans({ ...newTrans, type: 'expense', category: 'Débitos Gerais' })}
+                                            >
+                                                Débito (Saída)
+                                            </button>
+                                        </div>
 
-                                    {newTrans.method === 'credit_split' && (
-                                        <Input label="Número de Parcelas" type="number" min="2" max="12" value={newTrans.installments} onChange={e => setNewTrans({ ...newTrans, installments: e.target.value })} />
-                                    )}
+                                        <Input label="O que é?" placeholder="ex: Aluguel, Venda Balcão" value={newTrans.description} onChange={e => setNewTrans({ ...newTrans, description: e.target.value })} />
 
-                                    <div className="flex gap-2">
-                                        <Button variant="outline" className="flex-1" onClick={() => setIsAddingTrans(false)}>Cancelar</Button>
-                                        <Button className="flex-1" onClick={handleAddTransaction}>Salvar</Button>
+                                        <div className="grid grid-cols-2 gap-3">
+                                            <Input label="Quanto?" type="number" placeholder="0,00" value={newTrans.amount} onChange={e => setNewTrans({ ...newTrans, amount: e.target.value })} />
+                                            <Input label="Quando?" type="date" value={newTrans.date} onChange={e => setNewTrans({ ...newTrans, date: e.target.value })} />
+                                        </div>
+
+                                        <div>
+                                            <label className="text-[10px] uppercase font-bold text-gray-400 ml-1 mb-1 block">Forma de Pagamento</label>
+                                            <select className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl font-medium focus:ring-2 focus:ring-brand-500 outline-none transition-all" value={newTrans.method} onChange={e => setNewTrans({ ...newTrans, method: e.target.value as PaymentMethod })}>
+                                                <option value="cash">Dinheiro</option>
+                                                <option value="pix">Pix</option>
+                                                <option value="debit_card">Cartão de Débito</option>
+                                                <option value="credit_card">Cartão de Crédito (1x)</option>
+                                                <option value="credit_split">Cartão de Crédito (Parcelado)</option>
+                                            </select>
+                                        </div>
+
+                                        {newTrans.method === 'credit_split' && (
+                                            <Input label="Número de Parcelas" type="number" min="2" max="12" value={newTrans.installments} onChange={e => setNewTrans({ ...newTrans, installments: e.target.value })} />
+                                        )}
+
+                                        <div className="pt-2">
+                                            <Button className="w-full py-4 text-base" onClick={handleAddTransaction}>Salvar Lançamento</Button>
+                                        </div>
                                     </div>
-                                </div>
-                            </Card>
+                                </Card>
+                            </div>
                         )}
 
-                        {/* Relatório de Comissões */}
-                        <Card className="border border-brand-100">
-                            <div className="flex items-center gap-2 mb-4">
-                                <Banknote className="w-5 h-5 text-brand-600" />
-                                <h3 className="font-bold text-gray-800">Previsão de Comissões (Mês Atual)</h3>
+                        {/* Relatório de Comissões - Simplificado para economizar espaço */}
+                        <div className="bg-white rounded-2xl border border-gray-100 p-4">
+                            <div className="flex items-center justify-between mb-4">
+                                <div className="flex items-center gap-2">
+                                    <div className="p-1.5 bg-brand-50 rounded-lg text-brand-600">
+                                        <Banknote className="w-4 h-4" />
+                                    </div>
+                                    <h3 className="font-bold text-gray-800 text-sm">Comissões (Mês)</h3>
+                                </div>
+                                <button className="text-[10px] font-bold text-brand-600 uppercase tracking-widest">Ver Todos</button>
                             </div>
                             <div className="space-y-3">
                                 {salon.professionals.map(pro => {
@@ -1103,7 +1154,6 @@ export const TenantAdmin: React.FC<{ salonId: string; onBack: () => void; onHelp
                                     proAppts.forEach(appt => {
                                         const productsTotal = appt.products ? appt.products.reduce((acc, p) => acc + (p?.salePrice || 0), 0) : 0;
                                         const servicePrice = appt.price - productsTotal;
-
                                         serviceRevenue += servicePrice;
                                         productRevenue += productsTotal;
                                     });
@@ -1112,52 +1162,50 @@ export const TenantAdmin: React.FC<{ salonId: string; onBack: () => void; onHelp
                                     const productCommission = productRevenue * ((pro.productCommissionRate || 0) / 100);
                                     const totalCommission = serviceCommission + productCommission;
 
+                                    if (totalCommission === 0) return null;
+
                                     return (
-                                        <div key={pro.id} className="bg-gray-50 p-3 rounded-lg flex justify-between items-center">
-                                            <div>
-                                                <div className="font-bold text-sm text-gray-900">{pro.name}</div>
-                                                <div className="text-[10px] text-gray-500 mt-1 space-y-0.5">
-                                                    <div>Serviços: R$ {serviceRevenue.toFixed(2)} <span className="text-green-600">({pro.commissionRate}%)</span></div>
-                                                    <div>Vendas: R$ {productRevenue.toFixed(2)} <span className="text-green-600">({pro.productCommissionRate || 0}%)</span></div>
-                                                </div>
+                                        <div key={pro.id} className="flex justify-between items-center py-2 border-b border-gray-50 last:border-0 last:pb-0">
+                                            <div className="flex items-center gap-2">
+                                                <img src={pro.avatarUrl} className="w-8 h-8 rounded-full object-cover" alt="" />
+                                                <span className="font-bold text-sm text-gray-700">{pro.name.split(' ')[0]}</span>
                                             </div>
-                                            <div className="text-right flex flex-col items-end gap-1">
-                                                <div className="font-bold text-brand-600 text-sm">
-                                                    A Pagar: R$ {totalCommission.toFixed(2)}
-                                                </div>
-                                                {totalCommission > 0 && (
-                                                    <button
-                                                        onClick={() => handlePayCommission(pro.name, totalCommission)}
-                                                        className="text-[10px] bg-white border border-gray-300 px-2 py-1 rounded hover:bg-green-50 hover:border-green-300 hover:text-green-700 transition-colors"
-                                                    >
-                                                        Registrar Pagamento
-                                                    </button>
-                                                )}
+                                            <div className="text-right">
+                                                <div className="font-bold text-sm text-gray-900">R$ {totalCommission.toFixed(2)}</div>
+                                                <button
+                                                    onClick={() => handlePayCommission(pro.name, totalCommission)}
+                                                    className="text-[10px] text-green-600 font-bold"
+                                                >
+                                                    PAGAR
+                                                </button>
                                             </div>
                                         </div>
                                     );
                                 })}
                             </div>
-                        </Card>
+                        </div>
 
-                        <div className="space-y-2">
-                            <h3 className="font-bold text-gray-700 text-sm">Lançamentos ({financePeriod === 'today' ? 'Hoje' : 'Este Mês'})</h3>
+                        <div className="space-y-3">
                             {filteredTransactions.slice().reverse().map(t => (
-                                <div key={t.id} className="bg-white p-3 rounded-lg border border-gray-100 flex justify-between items-center">
-                                    <div>
-                                        <div className="font-bold text-sm text-gray-800">{t.description}</div>
-                                        <div className="text-xs text-gray-500 flex gap-2">
-                                            <span>{new Date(t.date).toLocaleDateString()}</span>
-                                            <span>• {t.paymentMethod}</span>
-                                            {t.installments && <span className="bg-blue-100 text-blue-800 px-1 rounded">Parcela {t.installments.current}/{t.installments.total}</span>}
+                                <div key={t.id} className="bg-white p-4 rounded-2xl border border-gray-100 flex justify-between items-center shadow-sm">
+                                    <div className="flex items-center gap-3">
+                                        <div className={`p-2 rounded-xl ${t.type === 'income' ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-600'}`}>
+                                            {t.type === 'income' ? <Target className="w-4 h-4" /> : <Package className="w-4 h-4" />}
+                                        </div>
+                                        <div>
+                                            <div className="font-bold text-sm text-gray-800">{t.description}</div>
+                                            <div className="text-[10px] text-gray-400 flex gap-2">
+                                                <span>{new Date(t.date).toLocaleDateString()}</span>
+                                                <span>• {t.paymentMethod}</span>
+                                            </div>
                                         </div>
                                     </div>
-                                    <span className={`font-bold text-sm ${t.type === 'income' ? 'text-green-600' : 'text-red-600'}`}>
+                                    <div className={`font-bold text-sm ${t.type === 'income' ? 'text-green-600' : 'text-red-600'}`}>
                                         {t.type === 'income' ? '+' : '-'} R$ {t.amount.toFixed(2)}
-                                    </span>
+                                    </div>
                                 </div>
                             ))}
-                            {filteredTransactions.length === 0 && <p className="text-gray-400 text-sm text-center">Nenhum lançamento no período.</p>}
+                            {filteredTransactions.length === 0 && <p className="text-gray-400 text-sm text-center py-8 bg-gray-50 rounded-2xl border border-dashed border-gray-200">Nenhum lançamento no período.</p>}
                         </div>
                     </div>
                 );
